@@ -27,16 +27,17 @@
 - [x] Created root-level `AGENTS.md`.
 - [x] Initialize the Next.js application.
 - [x] Create `code-standards.md`.
+- [x] Create `ui-context.md`.
+- [x] Define Backend Agent instructions.
+- [x] Define Frontend Agent instructions.
+- [x] Define Review Agent instructions.
 
 ## In Progress
 
-- [ ] Create `ui-context.md`.
+- [ ] Implement the application in controlled phases.
 
 ## Upcoming Tasks
 
-- [ ] Define Backend Agent instructions.
-- [ ] Define Frontend Agent instructions.
-- [ ] Define Review Agent instructions.
 - [ ] Implement the application in controlled phases.
 
 ## Architectural Decisions
