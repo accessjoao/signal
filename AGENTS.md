@@ -1,5 +1,17 @@
 # SIGNAL — AI Development Instructions
 
+## Assessment Requirements
+
+`context/assessment-requirements.md` contains the original Motorola Solutions technical assessment.
+
+Treat this document as the authoritative source for required functionality and submission deliverables.
+
+The six project context files describe SIGNAL's implementation decisions, architecture, coding standards, and visual identity.
+
+If a project decision conflicts with an explicit assessment requirement, the assessment takes precedence. Report the conflict before making changes.
+
+All specialized agents must consult the assessment requirements when planning, implementing, or reviewing relevant functionality.
+
 ## Project
 
 SIGNAL is an enterprise marketing website with integrated product catalog functionality, built using Next.js, TypeScript, and Tailwind CSS.
