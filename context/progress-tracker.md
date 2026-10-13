@@ -25,15 +25,15 @@
 - [x] Created `ai-workflow-rules.md`.
 - [x] Defined `agents/orchestrator.md`.
 - [x] Created root-level `AGENTS.md`.
+- [x] Initialize the Next.js application.
+- [x] Create `code-standards.md`.
 
 ## In Progress
 
-- [ ] Initialize the Next.js application.
+- [ ] Create `ui-context.md`.
 
 ## Upcoming Tasks
 
-- [ ] Create `code-standards.md`.
-- [ ] Create `ui-context.md`.
 - [ ] Define Backend Agent instructions.
 - [ ] Define Frontend Agent instructions.
 - [ ] Define Review Agent instructions.

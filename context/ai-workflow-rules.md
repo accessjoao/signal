@@ -167,6 +167,17 @@ The review agent is responsible for independent verification at designated miles
 
 When validation cannot be performed, explain why.
 
+### Testing Strategy
+
+- Use Vitest for isolated business logic and data-layer tests.
+- Use Playwright for critical user journeys and SSR verification.
+- Prioritize authentication, authorization, pricing, and content visibility.
+- Test new business logic when introduced.
+- Avoid tests that merely duplicate implementation details.
+- Run relevant tests before completing an agent handoff.
+- The Review Agent independently validates critical requirements.
+- Do not report passing tests unless they were executed successfully.
+
 ## 9. Error Handling and Recovery
 
 When implementation fails:

@@ -20,7 +20,7 @@ The architecture prioritizes server rendering, secure role-based content deliver
 | Content | Local JSON through a typed CMS adapter |
 | Authentication | Server-managed signed session cookie |
 | Hosting | Vercel |
-| Testing | Focused automated tests |
+| Testing | Vitest (unit), Playwright (E2E) |
 
 Use React Server Components by default.
 
