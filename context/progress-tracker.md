@@ -2,10 +2,10 @@
 
 ## Current Status
 
-**Reviewed:** 2026-10-13
-**Phase:** 1 — Foundation; scaffold present, verification incomplete.
-**Status:** Plan approved; task 1a ESLint repair complete and independently reviewed. Broader foundation verification remains incomplete.
-**Active implementation:** None. Stopped after the authorized ESLint task; further implementation requires user approval.
+**Reviewed:** 2026-10-14
+**Phase:** 2 - Product data model and mocked CMS adapter.
+**Status:** Task 2 complete with independent review passed. Stopped pending user approval before authentication.
+**Active implementation:** None. `/root/backend_products_resume` and `/root/review_products` completed task 2 verification. Authentication and UI remain out of scope until approved.
 
 `assessment-requirements.md` is authoritative for Motorola requirements. The six core context files define SIGNAL implementation choices; root `AGENTS.md` explicitly establishes assessment precedence. This plan preserves those choices and does not change architecture.
 
@@ -16,12 +16,13 @@
 - [x] Next.js App Router scaffold initialized with TypeScript strict mode and Tailwind CSS.
 - [x] Repository inspection and mandatory-requirement mapping completed.
 - [x] Task 1a: ESLint repair; lint, TypeScript and production build pass with independent Review Agent verification.
-- [ ] Broader foundation gate: production startup/styled browser response and runtime/caching review remain unverified.
-- [ ] Application requirements implemented and independently verified.
+- [x] Foundation phase complete per user confirmation for task 2; prior agent verification evidence remains recorded below (no additional foundation checks claimed).
+- [x] Task 2: product model, mock CMS, server-only authorization/projection and 28 unit tests independently verified.
+- [ ] Remaining application requirements implemented and independently verified.
 
-Existing application: `app/page.tsx` renders a SIGNAL heading; `app/layout.tsx` retains starter metadata and Geist fonts; `app/globals.css` retains starter styling. `public/` contains starter SVGs. No catalog/login/partner routes, product seed, CMS adapter, session logic, domain components, or tests exist. README is the starter document; `AGENT.md` is absent.
+Existing application: `app/page.tsx` renders a SIGNAL heading; `app/layout.tsx` retains starter metadata and Geist fonts; `app/globals.css` retains starter styling. `public/` contains starter SVGs. Product types, a 12-product seed, server-only CMS adapter and business rules, and 28 unit tests now exist. No catalog/login/partner routes, session logic or domain components exist. README is the starter document; `AGENT.md` is absent.
 
-`package.json` declares Next.js 16.4.0, React 19.3.0, Tailwind 4, TypeScript 5, ESLint 9, and `eslint-config-next` 16.4.0 (aligned with Next.js in task 1a). Scripts: dev, build, start, lint. Vitest and Playwright are not declared/configured. A lockfile, installed dependencies, and `.next` exist; these do not prove a clean production build.
+`package.json` declares Next.js 16.4.0, React 19.3.0, Tailwind 4, TypeScript 5, ESLint 9, and `eslint-config-next` 16.4.0 (aligned with Next.js in task 1a). Task 2 adds `server-only` 0.0.1, Vitest 4.1.11 and a `test` script with minimal Node configuration. Playwright is not configured. Actual verification evidence is recorded below.
 
 ## Requirement-to-Implementation Checklist
 
@@ -29,16 +30,16 @@ Unchecked rows are pending implementation or evidence, even when instructions al
 
 | Done | Mandatory assessment requirement | Architecture / agent coverage and current gap | Planned implementation / proof |
 |---|---|---|---|
-| [ ] | Next.js, TypeScript, Tailwind, Contentful or mock JSON | Stack scaffold exists; architecture and Backend specify typed mock CMS. Seed and adapter absent. | 1 foundation, 2 CMS; lint/types/build and adapter tests. |
+| [x] | Next.js, TypeScript, Tailwind, Contentful or mock JSON | Stack and typed local mock CMS exist and pass verification. | 1 foundation, 2 CMS; lint/types/build and adapter tests. |
 | [ ] | Full-stack simulated login accepting any non-empty input | Architecture and Backend specify non-empty username/password and server validation. No implementation. | 3 actions/session, 4 form; gate A verifies valid and empty inputs server-side. |
 | [ ] | Secure server-issued session/cookie | Backend specifies signed, expiring cookie, server secret, HttpOnly, SameSite and production Secure. No implementation. | 3; gate A verifies issuance, tampering, expiry, malformed cookies and logout. |
 | [ ] | Use session to protect routes | Architecture assigns `/partner`; Backend owns server guard. Route absent. | 3–4; gate A direct requests with/without valid session. |
-| [ ] | Set A public; Set B authenticated only | Visibility field and Backend rules cover both; authenticated users see A plus B. No seed or cards. | 2, 5–6; gate B compares actual public/authenticated responses. |
-| [ ] | Each product has `priceLoggedOut` and `priceAuthenticated` | Explicit internal model in architecture/Backend. No products. | 2 model/seed tests; UI receives only one authorized display price. |
+| [ ] | Set A public; Set B authenticated only | Visibility field and Backend rules cover both; authenticated users see A plus B. Seed and authorization rules verified; cards pending. | 2, 5–6; gate B compares actual public/authenticated responses. |
+| [x] | Each product has `priceLoggedOut` and `priceAuthenticated` | Both fields verified in all 12 raw records; frontend contract exposes only displayPrice. | 2 model/seed tests; UI receives only one authorized display price. |
 | [ ] | Prices and role-based content in initial HTML (SSR/SSG) | Architecture, Backend, Frontend and Review explicitly require SSR. No product rendering yet. | 5; gate B HTTP HTML assertions before hydration for both roles. |
 | [ ] | At least two layouts; control switches without reload | Frontend specifies Price First / Specs First with small Client Component. Missing. | 6; gate C confirms distinct emphasis, unchanged products/prices and no document reload. |
-| [ ] | Category filtering | Backend filtering + Frontend URL controls assigned. Missing. | 2 logic, 5 route query parsing, 6 controls; gate C combined/direct-link tests. |
-| [ ] | Text search | Backend case-insensitive matching + Frontend control assigned. Missing. | 2, 5–6; gate C searches authorized results only. |
+| [ ] | Category filtering | Backend filtering verified; Frontend URL controls pending. | 2 logic, 5 route query parsing, 6 controls; gate C combined/direct-link tests. |
+| [ ] | Text search | Backend case-insensitive matching verified; Frontend control pending. | 2, 5–6; gate C searches authorized results only. |
 | [ ] | Clear Filters button | Agent instructions require reset; exact button presentation must be retained. Missing. | 6; gate C resets search/category and role-appropriate results. |
 | [ ] | Missing-image fallback | Architecture/Frontend/Review cover fallback. No component or assets. | 6; gate C covers absent image and failed image load. |
 | [ ] | Empty-results fallback | Architecture/Frontend/Review cover helpful reset state. Missing. | 6; gate C zero-match query with recovery. |
@@ -65,14 +66,14 @@ Additional SIGNAL/user checkpoints: logout, no private data or partner prices in
 - Keep the approved five routes (`/`, `/catalog`, `/catalog/[slug]`, `/login`, `/partner`). Do not add related-product features, additional marketing routes, dashboards, commerce, state libraries, or orchestration infrastructure.
 - The assessment's questions-within-24-hours note is conditional guidance, not an app feature. Receipt time is unknown; no email is requested or authorized.
 
-## Sequential Implementation Plan - Task 1a Complete; Later Tasks Pending
+## Sequential Implementation Plan - Task 2 Complete
 
 All assignments require root instructions, the assessment, workflow rules, architecture, progress tracker, relevant code, and the responsible agent definition. Backend also reads code standards/project overview; Frontend reads those plus UI context; Review reads all six core documents. Complete one bounded task and its handoff before starting dependent work. Listed review gates are blocking for Critical/High findings.
 
 | Phase/task | Owner | Objective and deliverables | Dependency and acceptance / handoff |
 |---|---|---|---|
 | 1a - Repair foundation (complete) | Frontend | Narrowly assigned tooling repair: diagnose ESLint config/package mismatch and make the smallest justified correction after approval; inspect framework/Tailwind configuration. No app features. | User approval. Handoff exact config changes and lint/type/build results; do not reinitialize the app or broadly upgrade packages. |
-| 1b - Foundation gate (partial: command checks passed) | Review | Independently check lint, types, production build/start and styled root response; inspect caching/runtime configuration. | 1a. Reproducible baseline required; route environment/tooling fixes back to responsible agent. |
+| 1b - Foundation gate (complete per user confirmation) | Review | Independently check lint, types, production build/start and styled root response; inspect caching/runtime configuration. | 1a. Reproducible baseline required; route environment/tooling fixes back to responsible agent. |
 | 2 — Product data contract | Backend | Typed local JSON seed (10–12 products, three categories, A/B, two prices), simple CMS adapter, authorized presentation contract, search/category/slug logic; minimal Vitest setup and focused tests when implementation is authorized. | 1b. Unique IDs/slugs, consistent price representation, malformed-content behavior, no seed imports in UI. Handoff functions/types, filter semantics and safe sample data. |
 | 3 — Sessions and access boundary | Backend | Server-only signed/expiring sessions, environment secret contract, login/logout actions, server guard for `/partner`. No credential storage. | 2. Unit tests for non-empty/empty input, signatures, expiry and malformed sessions; handoff action/error shapes and protected route entry point. |
 | 4 — Login and partner presentation | Frontend | Small accessible login form and partner view wired to Backend actions/guard; logout and validation feedback. | 3. Complete browser flow without client-only auth; handoff routes, controls and reproducible journeys. |
@@ -91,7 +92,7 @@ All assignments require root instructions, the assessment, workflow rules, archi
 
 Every task returns **Task, Changes, Decisions, Verification, Outstanding Issues, Recommended Next Step**. Backend adds contracts/action shapes; Frontend identifies consumed contracts and components; Review supplies severity, reproduction evidence and unverified checks. Orchestrator accepts handoffs, updates this tracker and routes focused fixes before dependent work continues.
 
-During approved execution, preserve concise actual task prompts, agent identity/role, context supplied, decisions, verification and manual interventions for the eventual `AGENT.md`. The planning audit invoked no independent agents. Task 1a subsequently ran independent Frontend and Review agents as recorded below; later assignments remain proposals. No additional orchestration software is needed.
+During approved execution, preserve concise actual task prompts, agent identity/role, context supplied, decisions, verification and manual interventions for the eventual `AGENT.md`. The planning audit invoked no independent agents. Task 1a subsequently ran independent Frontend and Review agents; task 2 resumed with independent Backend and Review execution as recorded below. Later assignments remain proposals. No additional orchestration software is needed.
 
 ## Verification Checkpoints
 
@@ -127,20 +128,41 @@ During approved execution, preserve concise actual task prompts, agent identity/
 
 **Decisions / intervention:** User directed the bounded repair. Frontend made the AI-generated package alignment; approved escalations enabled registry access and font downloads. Review made no code changes. This record supplies factual handoff evidence for the later `AGENT.md`; no human-authored code fix is claimed.
 
+## Task 2 Outcome and Verification - 2026-10-14
+
+**Task / execution:** User requested resumption of interrupted product data work with the explicit authorization boundary clarification. Orchestrator read root instructions, assessment, all six core context files and Backend/Review roles. `/root/backend_products_resume` inspected the recovered implementation and completed verification without additional code edits. Then `/root/review_products` independently inspected implementation and reran all four checks; it made no edits. No new install or escalation was needed in this resumed run. Prior interrupted execution results are not inferred.
+
+**Files:** Created during this phase: `types/product.ts`, `data/products.json`, `lib/products/product-rules.ts`, `lib/cms/products.ts`, `tests/products.test.ts`, `vitest.config.mts`. Modified: `package.json`, `package-lock.json`, and this Orchestrator-owned tracker. No application pages, authentication or endpoints were added.
+
+**Contracts / decisions:** Raw server-only `CmsProduct` retains all ten required fields, including both prices and visibility. Shared frontend-safe `Product` contains id, slug, name, description, category, image, specifications and only `displayPrice`. Adapter exports `getProducts(access, filters?) -> Promise<Product[]>`, `getProductBySlug(slug, access) -> Promise<Product | null>` and `getCategories() -> ProductCategory[]`. Explicit access is trusted server input and must later derive from a server-validated session, never a request role or client state. Raw retrieval and role-aware mapping import `server-only`; test-only mocking does not change production configuration.
+
+The seed contains 12 fictional products, four per required category, eight public and four restricted. Prices are USD integer cents. Authorization and allowlist projection precede search/filtering; nested specification objects are copied and extra fields removed. Search trims input and matches name/description case-insensitively; categories match exact labels after trimming, blank means all and unknown means no matches. Unknown and inaccessible slugs both return null. Invalid required CMS records are omitted; duplicate identities retain the first valid record; missing optional media/specifications normalize to null/empty. Local JSON and two small server modules keep replacement straightforward without a generic CMS framework.
+
+| Command | Backend result | Independent Review result |
+|---|---|---|
+| `npm.cmd run lint` | Passed, exit 0 | Passed, exit 0 |
+| `npx.cmd tsc --noEmit` | Passed, exit 0 | Passed, exit 0 |
+| `npm.cmd run build` | Passed, exit 0 | Passed, exit 0 |
+| `npm.cmd test` | Passed, 28/28 | Passed, 28/28 |
+
+**Review:** Pass; no actionable defects. Verified complete/unique seed, both visibility levels and correct prices, no raw price fields in presentation contracts, authorization before filters, slug behavior, mutation isolation, malformed data handling and meaningful tests. No assessment conflict identified. Backend also ran `git diff --check` successfully (line-ending warnings only).
+
+**Limitations / handoff:** Image fields intentionally remain null until later asset and fallback presentation work. Builds contain only existing `/` and `/_not-found`; they do not verify future catalog SSR/RSC privacy, session validation, personalized caching or client-import rejection in an integration build. Those checks remain assigned to later gates. Task 2 is complete; authentication awaits user approval.
+
 ## Open Decisions, Risks and Blockers
 
-1. **Approval gate:** Plan approved and ESLint task complete. Stop here; further foundation work, product data and authentication require the user's next approval.
-2. **Foundation status:** ESLint, TypeScript and production build pass independently. Cold builds need Google Fonts network access; production startup/browser checks and standard-host/runtime review remain unverified. No outstanding ESLint defect identified.
+1. **Approval gate:** Task 2 complete and reviewed. Authentication and frontend implementation are not authorized.
+2. **Foundation status:** User confirms foundation verification complete. Prior lint/types/build evidence is retained; cold builds may need Google Fonts network access.
 3. **Privacy/SSR risk:** Passing raw products (both prices), client-only selection, personalized shared caches, prefetch/navigation payloads or public metadata can defeat access controls. Apply authorization and price projection before serialization; test responses at gate B and after UI integration.
 4. **Session details:** Backend must record a justified lifetime and signed-payload contract, use an environment secret with no insecure production fallback, and define consistent post-login/logout navigation. No database/auth provider is needed.
-5. **Data/UI contract:** Document currency/price units, URL keys, invalid category handling, and the single-display-price shape before Frontend integration. These are bounded implementation choices, not reasons to add services.
+5. **Data/UI contract:** USD integer cents, single displayPrice, trimmed name/description search and empty results for unknown categories are established. URL parameter keys remain a route-integration decision.
 6. **Content/asset gap:** Only starter assets exist. Frontend must choose appropriately licensed local images and fallback behavior; never put restricted seed data in `public/`. Assess direct asset exposure when choosing partner-only imagery.
 7. **Delivery dependencies:** Repository submission URL/access, Vercel project access and production secret provisioning are not verified. Resolve at delivery preparation; they do not block local catalog work after approval.
-8. **Execution evidence:** Independent Frontend and Review handoffs now exist for task 1a. Continue preserving actual task and intervention evidence; application-development evidence remains pending.
+8. **Execution evidence:** Independent Frontend/Review handoffs exist for task 1a; resumed Backend/Review handoffs exist for task 2. Preserve this evidence for the final AGENT.md; do not infer unavailable interrupted-run verification.
 
 ## Next Recommended Task
 
-Stop after task 1a as requested. Recommended next authorization: finish the remaining **1b Review foundation checks** (production startup/styled root response and runtime configuration review). Only after that gate and user approval should **2: Backend product types, mock seed, CMS adapter and authorized data contract** begin. No product data or authentication implementation has started.
+After explicit user approval, delegate task 3 to Backend: server-validated signed sessions and connect their derived access level to the existing product retrieval functions. Do not begin authentication or frontend work before that approval.
 
 ## Update Rules
 

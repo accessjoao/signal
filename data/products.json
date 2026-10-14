@@ -1,0 +1,302 @@
+[
+  {
+    "id": "com-001",
+    "slug": "relay-r1-handheld",
+    "name": "Relay R1 Handheld",
+    "description": "Compact digital radio for warehouse teams, with clear voice and an all-shift battery.",
+    "category": "Communication Devices",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Battery",
+        "value": "18 hours"
+      },
+      {
+        "label": "Protection",
+        "value": "IP67"
+      },
+      {
+        "label": "Channels",
+        "value": "64"
+      }
+    ],
+    "priceLoggedOut": 34900,
+    "priceAuthenticated": 29900,
+    "visibility": "public"
+  },
+  {
+    "id": "com-002",
+    "slug": "relay-r3-mobile",
+    "name": "Relay R3 Mobile",
+    "description": "Vehicle-mounted radio with a high-contrast display for coordinated field operations.",
+    "category": "Communication Devices",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Output",
+        "value": "25 W"
+      },
+      {
+        "label": "Channels",
+        "value": "128"
+      },
+      {
+        "label": "Power",
+        "value": "12 V DC"
+      }
+    ],
+    "priceLoggedOut": 64900,
+    "priceAuthenticated": 55900,
+    "visibility": "public"
+  },
+  {
+    "id": "com-003",
+    "slug": "link-h2-headset",
+    "name": "Link H2 Headset",
+    "description": "Lightweight over-ear headset with a noise-reducing boom microphone for busy dispatch desks.",
+    "category": "Communication Devices",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Connection",
+        "value": "USB-C"
+      },
+      {
+        "label": "Weight",
+        "value": "165 g"
+      },
+      {
+        "label": "Microphone",
+        "value": "Directional boom"
+      }
+    ],
+    "priceLoggedOut": 15900,
+    "priceAuthenticated": 12900,
+    "visibility": "public"
+  },
+  {
+    "id": "com-004",
+    "slug": "relay-x8-command",
+    "name": "Relay X8 Command",
+    "description": "Partner-only multi-site radio console for coordinated incident response and fleet dispatch.",
+    "category": "Communication Devices",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Talk groups",
+        "value": "256"
+      },
+      {
+        "label": "Network",
+        "value": "Dual Ethernet"
+      },
+      {
+        "label": "Display",
+        "value": "10-inch touchscreen"
+      }
+    ],
+    "priceLoggedOut": 289900,
+    "priceAuthenticated": 249900,
+    "visibility": "authenticated"
+  },
+  {
+    "id": "vid-001",
+    "slug": "vista-d4-dome",
+    "name": "Vista D4 Dome",
+    "description": "Compact indoor monitoring camera with wide dynamic range for entrances and reception areas.",
+    "category": "Video & Monitoring",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Resolution",
+        "value": "4 MP"
+      },
+      {
+        "label": "Lens",
+        "value": "2.8 mm"
+      },
+      {
+        "label": "Power",
+        "value": "PoE"
+      }
+    ],
+    "priceLoggedOut": 42900,
+    "priceAuthenticated": 36900,
+    "visibility": "public"
+  },
+  {
+    "id": "vid-002",
+    "slug": "vista-b6-bullet",
+    "name": "Vista B6 Bullet",
+    "description": "Weather-resistant perimeter camera with infrared illumination for outdoor facilities.",
+    "category": "Video & Monitoring",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Resolution",
+        "value": "6 MP"
+      },
+      {
+        "label": "Night range",
+        "value": "40 m"
+      },
+      {
+        "label": "Protection",
+        "value": "IP67"
+      }
+    ],
+    "priceLoggedOut": 57900,
+    "priceAuthenticated": 49900,
+    "visibility": "public"
+  },
+  {
+    "id": "vid-003",
+    "slug": "archive-n8-recorder",
+    "name": "Archive N8 Recorder",
+    "description": "Eight-channel video recorder for straightforward monitoring and local event review.",
+    "category": "Video & Monitoring",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Channels",
+        "value": "8"
+      },
+      {
+        "label": "Storage",
+        "value": "2 TB included"
+      },
+      {
+        "label": "Video output",
+        "value": "4K HDMI"
+      }
+    ],
+    "priceLoggedOut": 89900,
+    "priceAuthenticated": 77900,
+    "visibility": "public"
+  },
+  {
+    "id": "vid-004",
+    "slug": "vista-p30-tracker",
+    "name": "Vista P30 Tracker",
+    "description": "Partner-only pan-tilt-zoom camera for wide-area observation at large industrial sites.",
+    "category": "Video & Monitoring",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Optical zoom",
+        "value": "30x"
+      },
+      {
+        "label": "Resolution",
+        "value": "4 MP"
+      },
+      {
+        "label": "Protection",
+        "value": "IP66"
+      }
+    ],
+    "priceLoggedOut": 229900,
+    "priceAuthenticated": 199900,
+    "visibility": "authenticated"
+  },
+  {
+    "id": "net-001",
+    "slug": "core-s8-switch",
+    "name": "Core S8 Switch",
+    "description": "Managed compact switch delivering power and data to small camera and communication networks.",
+    "category": "Network & Infrastructure",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Ports",
+        "value": "8 Gigabit PoE+"
+      },
+      {
+        "label": "PoE budget",
+        "value": "120 W"
+      },
+      {
+        "label": "Uplinks",
+        "value": "2 SFP"
+      }
+    ],
+    "priceLoggedOut": 31900,
+    "priceAuthenticated": 26900,
+    "visibility": "public"
+  },
+  {
+    "id": "net-002",
+    "slug": "bridge-a6-access-point",
+    "name": "Bridge A6 Access Point",
+    "description": "Ceiling-mounted wireless access point for reliable connectivity in offices and shared workspaces.",
+    "category": "Network & Infrastructure",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Wireless",
+        "value": "Wi-Fi 6"
+      },
+      {
+        "label": "Bands",
+        "value": "2.4 / 5 GHz"
+      },
+      {
+        "label": "Power",
+        "value": "PoE+"
+      }
+    ],
+    "priceLoggedOut": 24900,
+    "priceAuthenticated": 20900,
+    "visibility": "public"
+  },
+  {
+    "id": "net-003",
+    "slug": "core-r4-industrial-router",
+    "name": "Core R4 Industrial Router",
+    "description": "Rugged edge router with cellular failover for remote infrastructure cabinets.",
+    "category": "Network & Infrastructure",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Ethernet",
+        "value": "4 Gigabit ports"
+      },
+      {
+        "label": "Failover",
+        "value": "Dual-SIM LTE"
+      },
+      {
+        "label": "Temperature",
+        "value": "-20 to 60 C"
+      }
+    ],
+    "priceLoggedOut": 119900,
+    "priceAuthenticated": 99900,
+    "visibility": "authenticated"
+  },
+  {
+    "id": "net-004",
+    "slug": "core-s24-aggregation",
+    "name": "Core S24 Aggregation",
+    "description": "Partner-only managed aggregation switch for high-capacity monitoring and operational networks.",
+    "category": "Network & Infrastructure",
+    "image": null,
+    "specifications": [
+      {
+        "label": "Ports",
+        "value": "24 Gigabit PoE+"
+      },
+      {
+        "label": "Uplinks",
+        "value": "4 SFP+ 10 Gb"
+      },
+      {
+        "label": "PoE budget",
+        "value": "370 W"
+      }
+    ],
+    "priceLoggedOut": 189900,
+    "priceAuthenticated": 164900,
+    "visibility": "authenticated"
+  }
+]
