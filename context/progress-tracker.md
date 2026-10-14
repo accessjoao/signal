@@ -3,9 +3,12 @@
 ## Current Status
 
 **Reviewed:** 2026-10-14
-**Phase:** 2 - Product data model and mocked CMS adapter.
-**Status:** Task 2 complete with independent review passed. Stopped pending user approval before authentication.
-**Active implementation:** None. `/root/backend_products_resume` and `/root/review_products` completed task 2 verification. Authentication and UI remain out of scope until approved.
+
+**Phase:** 3 — Sessions and access boundary.
+
+**Status:** Task 3 implementation complete. Authentication unit tests, TypeScript, ESLint, and production build pass. Browser authentication flow and independent Review Agent verification remain pending.
+
+**Active implementation:** Task 3 backend complete. Task 4 — Login and partner presentation — is next.
 
 `assessment-requirements.md` is authoritative for Motorola requirements. The six core context files define SIGNAL implementation choices; root `AGENTS.md` explicitly establishes assessment precedence. This plan preserves those choices and does not change architecture.
 
@@ -18,6 +21,10 @@
 - [x] Task 1a: ESLint repair; lint, TypeScript and production build pass with independent Review Agent verification.
 - [x] Foundation phase complete per user confirmation for task 2; prior agent verification evidence remains recorded below (no additional foundation checks claimed).
 - [x] Task 2: product model, mock CMS, server-only authorization/projection and 28 unit tests independently verified.
+- [x] Task 3: HMAC-signed, expiring sessions, server-side credential validation, login/logout Server Actions, and protected `/partner` route.
+- [x] Authentication unit tests: 12 passing; full suite: 40 passing.
+- [x] Task 3 implementation verification: TypeScript, ESLint, and production build pass.
+- [ ] Task 3 independent Review Agent verification and full browser authentication flow.
 - [ ] Remaining application requirements implemented and independently verified.
 
 Existing application: `app/page.tsx` renders a SIGNAL heading; `app/layout.tsx` retains starter metadata and Geist fonts; `app/globals.css` retains starter styling. `public/` contains starter SVGs. Product types, a 12-product seed, server-only CMS adapter and business rules, and 28 unit tests now exist. No catalog/login/partner routes, session logic or domain components exist. README is the starter document; `AGENT.md` is absent.
@@ -87,6 +94,60 @@ All assignments require root instructions, the assessment, workflow rules, archi
 | 8 — Final integration | Review | Full requirement audit, security/SSR regression, accessibility and responsive inspection; lint/types/unit/E2E/build checks. | 7. Gates A–D pass; no unresolved Critical/High issues; report other limitations and focused fixes for owners, then retest. |
 | 9a — Deployment preparation and release | Backend | Explicit delivery assignment: document environment/build/start requirements, configure server secret in approved Vercel project and deploy verified app. | 8 and deployment access/authorization. Handoff real URL and production behavior; no secrets committed. |
 | 9b — Documentation and submission gate | Review | Explicit documentation assignment: complete/verify README and assemble `AGENT.md` from Orchestrator-maintained evidence; verify deployment and prepare submission fields. | 9a. Gate E passes; Orchestrator validates execution history and final readiness before user submission. |
+
+## Task 3 Outcome and Verification
+
+**Task:** Implement the server-side authentication foundation for SIGNAL, following the Backend Agent's existing architecture and security requirements.
+
+**Execution:** After Task 2, implementation continued through a guided, file-by-file workflow in ChatGPT rather than a separate Codex agent execution. The user created the files, ran verification commands locally, and reported the results. This distinction must be preserved in the final `AGENT.md`.
+
+**Files created:**
+- `lib/auth/session-token.ts`
+- `lib/auth/session.ts`
+- `lib/auth/auth.ts`
+- `app/actions/auth.ts`
+- `app/partner/page.tsx`
+- `tests/auth.test.ts`
+- `tests/mocks/server-only.ts`
+- `.env.local` (local, Git-ignored)
+
+**Files modified:**
+- `vitest.config.mts`
+
+**Architecture and decisions:**
+- Simulated authentication accepts any non-empty username and password.
+- Sessions use HMAC-SHA256 signed tokens with a seven-day expiration.
+- Session cookies use HttpOnly, SameSite=Lax, Path=/, and Secure in production.
+- `SESSION_SECRET` is supplied through environment configuration, with a minimum length of 32 characters.
+- Token generation and verification are separated from Next.js cookie operations for isolated unit testing.
+- Authentication is determined server-side; no password is stored in the session.
+- `/partner` verifies the session before rendering and redirects unauthenticated visitors to `/login`.
+- Login and logout are implemented as Next.js Server Actions.
+
+**Implementation issues and corrections:**
+1. Next.js 16 Cache Components reported request-dependent cookie access during `/partner` prerendering. Adding `export const instant = false` to the protected route resolved the observed development-server error.
+2. Vitest initially failed because the `server-only` package intentionally throws outside Next.js's server environment. A test-only module alias and empty mock resolved the import issue without changing production protection.
+3. Session-token logic was extracted into a dedicated module to improve testability and malformed-token handling.
+
+**Verification reported by user:**
+
+| Check | Result |
+|---|---|
+| `npx.cmd tsc --noEmit` | Passed |
+| `npm run lint` | Passed |
+| `npm run build` | Passed |
+| `npx.cmd vitest run` | Passed: 40 tests (28 product, 12 authentication) |
+| Unauthenticated `/partner` request | HTTP 307 redirect to `/login` |
+| Production build route output | `/partner` dynamically rendered |
+
+**Outstanding issues:**
+- `/login` currently returns 404 because its page has not been implemented.
+- Successful browser login, cookie issuance, authenticated partner access, logout, and subsequent access denial are not yet verified.
+- Cookie security attributes and session isolation require integration testing.
+- Independent Review Agent verification has not yet occurred.
+- SSR product visibility and pricing isolation remain pending.
+
+**Recommended next step:** Task 4 — implement the login interface, connect the existing Server Actions, add logout controls, and complete Gate A authentication verification before catalog integration.
 
 ### Handoffs and Evidence
 
