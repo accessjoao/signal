@@ -39,7 +39,7 @@ export default function ProductCard({
 
   const CategoryIcon =
     categoryIcons[
-      product.category as keyof typeof categoryIcons
+    product.category as keyof typeof categoryIcons
     ] ?? Radio;
 
   const priceSection = (
@@ -137,6 +137,7 @@ export default function ProductCard({
 
           <Link
             href={`/catalog/${product.slug}`}
+            prefetch={true}
             className="flex min-h-12 w-full items-center justify-between rounded-xl bg-[#D9F36A] px-5 text-sm font-semibold text-[#171A1D] transition-colors hover:bg-[#e7ff88] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D9F36A]"
           >
             View product

@@ -8,55 +8,62 @@ import { getAccessLevel } from "@/lib/auth/session";
 import { getProductBySlug } from "@/lib/cms/products";
 
 type InterceptedProductPageProps = {
-    params: Promise<{
-        slug: string;
-    }>;
+  params: Promise<{
+    slug: string;
+  }>;
 };
 
 async function ProductDrawerContent({
-    params,
+  params,
 }: InterceptedProductPageProps) {
-    // Establish request-time rendering before validating the session.
-    await connection();
+  // Establish request-time rendering before validating the session.
+  await connection();
 
-    const { slug } = await params;
+  const { slug } = await params;
 
-    const access = await getAccessLevel();
+  const access = await getAccessLevel();
 
-    const product = await getProductBySlug(slug, access);
+  const product = await getProductBySlug(slug, access);
 
-    if (!product) {
-        notFound();
-    }
+  if (!product) {
+    notFound();
+  }
 
-    return (
-        <ProductDrawer>
-            <ProductDetails
-                product={product}
-                isAuthenticated={access === "authenticated"}
-            />
-        </ProductDrawer>
-    );
+  return (
+    <ProductDetails
+      product={product}
+      isAuthenticated={access === "authenticated"}
+    />
+  );
+}
+
+function DrawerLoading() {
+  return (
+    <div
+      role="status"
+      aria-label="Loading product details"
+      className="flex min-h-[50vh] flex-col items-center justify-center gap-4"
+    >
+      <div
+        aria-hidden="true"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#D9F36A]"
+      />
+
+      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#B9BEC0]">
+        Loading product details
+      </p>
+    </div>
+  );
 }
 
 export default function InterceptedProductPage({
-    params,
+  params,
 }: InterceptedProductPageProps) {
-    return (
-        <Suspense
-            fallback={
-                <div
-                    role="status"
-                    aria-label="Loading product details"
-                    className="fixed inset-0 z-50 flex items-center justify-end bg-black/30"
-                >
-                    <div className="flex h-full w-full items-center justify-center bg-[#F8F7F4] md:max-w-xl lg:max-w-2xl">
-                        <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-200 border-t-neutral-800" />
-                    </div>
-                </div>
-            }
-        >
-            <ProductDrawerContent params={params} />
-        </Suspense>
-    );
+  return (
+    <ProductDrawer>
+      <Suspense fallback={<DrawerLoading />}>
+        <ProductDrawerContent params={params} />
+      </Suspense>
+    </ProductDrawer>
+  );
 }

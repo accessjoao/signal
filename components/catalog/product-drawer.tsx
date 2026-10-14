@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -23,10 +24,10 @@ export default function ProductDrawer({
   const hasNavigatedRef = useRef(false);
 
   const closeDrawer = useCallback(() => {
-    if (hasNavigatedRef.current) return;
+    if (hasNavigatedRef.current || isClosing) return;
 
     setIsClosing(true);
-  }, []);
+  }, [isClosing]);
 
   const finishClosing = useCallback(() => {
     if (hasNavigatedRef.current) return;
@@ -104,7 +105,7 @@ export default function ProductDrawer({
             ? 0
             : isClosing
               ? 0.3
-              : 0.35,
+              : 0.32,
         }}
       />
 
@@ -121,21 +122,12 @@ export default function ProductDrawer({
         animate={{
           x: isClosing ? "100%" : 0,
         }}
-        transition={
-          shouldReduceMotion
-            ? { duration: 0 }
-            : isClosing
-              ? {
-                  duration: 0.3,
-                  ease: [0.4, 0, 1, 1],
-                }
-              : {
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 30,
-                  mass: 1,
-                }
-        }
+        transition={{
+          duration: shouldReduceMotion ? 0 : 0.32,
+          ease: isClosing
+            ? [0.4, 0, 1, 1]
+            : [0.22, 1, 0.36, 1],
+        }}
         onAnimationComplete={() => {
           if (isClosing) {
             finishClosing();
@@ -180,27 +172,9 @@ export default function ProductDrawer({
         </div>
 
         {/* Scrollable product content */}
-        <motion.div
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-8 md:px-10 md:py-10"
-          initial={
-            shouldReduceMotion
-              ? false
-              : { opacity: 0, y: 16 }
-          }
-          animate={{
-            opacity: isClosing ? 0 : 1,
-            y: isClosing ? 8 : 0,
-          }}
-          transition={{
-            duration: shouldReduceMotion ? 0 : 0.3,
-            delay:
-              shouldReduceMotion || isClosing
-                ? 0
-                : 0.15,
-          }}
-        >
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-8 md:px-10 md:py-10">
           {children}
-        </motion.div>
+        </div>
 
         {/* Bottom accent */}
         <div
