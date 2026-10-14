@@ -21,7 +21,9 @@ test.describe("SIGNAL authentication", () => {
 
         await expect(page).toHaveURL(/\/partner$/);
         await expect(
-            page.getByRole("heading", { name: /Welcome to/ }),
+            page.getByRole("main").getByRole("button", {
+                name: "Sign out",
+            }),
         ).toBeVisible();
     });
 
@@ -83,7 +85,10 @@ test.describe("SIGNAL authentication", () => {
 
         await expect(page).toHaveURL(/\/partner$/);
 
-        await page.getByRole("button", { name: "Sign out" }).click();
+        await page
+            .getByRole("main")
+            .getByRole("button", { name: "Sign out" })
+            .click();
 
         await expect(page).toHaveURL(/\/login$/);
 
@@ -144,20 +149,12 @@ test.describe("SIGNAL authentication", () => {
     });
 
 
+
     test("rejects empty credentials on the server", async ({ page }) => {
         await page.goto("/login");
 
-        // Wait until React has hydrated the form.
-        await expect(
-            page.getByRole("button", { name: "Sign in" }),
-        ).toBeEnabled();
-
-        await page.locator("form").evaluate((form) => {
-            (form as HTMLFormElement).noValidate = true;
-        });
-
-        // Submit through Playwright's normal browser interaction
-        // so React handles the Server Action.
+        // Submit the empty form normally.
+        // The form uses noValidate so the Server Action handles validation.
         await page.getByRole("button", { name: "Sign in" }).click();
 
         // The Server Action should return a validation error.

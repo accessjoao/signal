@@ -112,7 +112,10 @@ test.describe("Catalog product drawer", () => {
     await page.goto("/catalog/relay-r1-handheld");
 
     await expect(
-      page.getByRole("heading", { name: "Relay R1 Handheld" }),
+      page.getByRole("heading", {
+        name: "Relay R1 Handheld",
+        level: 1,
+      }),
     ).toBeVisible();
 
     await expect(

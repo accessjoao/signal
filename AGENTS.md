@@ -24,7 +24,11 @@ Development follows a Markdown-driven multi-agent workflow.
 2. Read `context/architecture-context.md`.
 3. Read `context/project-overview.md`.
 4. Read `context/progress-tracker.md`, when available.
-5. Read additional context files relevant to the task.
+5. Read additional context files relevant to the task:
+   - Frontend or visual tasks must read `context/ui-context.md`.
+   - Backend and authentication tasks must follow `context/architecture-context.md`.
+   - Review tasks must verify the implementation against the
+     assessment requirements and applicable context files.
 6. Inspect the existing implementation before making changes.
 
 Do not begin implementation without understanding the task's scope and architectural constraints.
@@ -58,6 +62,33 @@ Do not claim independent agent execution unless it actually occurred.
 - Avoid unnecessary dependencies and abstractions.
 
 `context/architecture-context.md` is the authoritative source for architectural decisions.
+
+
+## UI and Design Rules
+
+`context/ui-context.md` is the authoritative source for SIGNAL's
+visual identity, component styling, responsive behavior, and motion.
+
+All frontend implementations must follow the current design direction:
+
+- Use SIGNAL's dark graphite visual system.
+- Maintain consistent use of lime-green accents.
+- Use Geist typography and established spacing conventions.
+- Preserve the shared navigation and responsive layouts.
+- Keep the catalog, product drawer, standalone product pages,
+  login, and partner experience visually consistent.
+- Use purposeful animation and respect reduced-motion preferences.
+- Prioritize mobile usability, accessibility, and readable contrast.
+- Reuse established components rather than introducing
+  competing visual patterns.
+
+Do not revert to the previous light editorial design.
+
+Visual changes must not compromise authentication, authorization,
+server-rendered pricing, or product visibility requirements.
+
+The Frontend Agent must consult the UI context before implementing
+or modifying visual components.
 
 ## Implementation Rules
 

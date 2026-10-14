@@ -24,3 +24,85 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* SIGNAL category dropdown */
+
+@keyframes signal-select-open {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes signal-select-close {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+}
+
+.signal-select-content[data-state="open"] {
+  transform-origin: var(--radix-select-content-transform-origin);
+  animation: signal-select-open 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.signal-select-content[data-state="closed"] {
+  transform-origin: var(--radix-select-content-transform-origin);
+  animation: signal-select-close 250ms ease-in-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-select-content[data-state="open"],
+  .signal-select-content[data-state="closed"] {
+    animation: none;
+  }
+}
+
+
+/* SIGNAL orbital animation */
+
+@keyframes signal-orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.signal-orbit {
+  transform-origin: center;
+  animation-name: signal-orbit-spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.signal-orbit-outer {
+  animation-duration: 28s;
+}
+
+.signal-orbit-middle {
+  animation-duration: 19s;
+  animation-direction: reverse;
+}
+
+.signal-orbit-inner {
+  animation-duration: 12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-orbit {
+    animation: none;
+  }
+}

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { connection } from "next/server";
+import { ArrowRight, ArrowUpRight, LockKeyhole } from "lucide-react";
 
 import CatalogFilters from "@/components/catalog/catalog-filters";
 import CatalogGrid from "@/components/catalog/catalog-grid";
@@ -20,11 +21,9 @@ function getSingleValue(
   return typeof value === "string" ? value.trim() : "";
 }
 
-// This component performs request-time work.
 async function CatalogContent({
   searchParams,
 }: CatalogPageProps) {
-  // Ensure session-dependent data is resolved per request.
   await connection();
 
   const params = await searchParams;
@@ -33,8 +32,10 @@ async function CatalogContent({
   const search = getSingleValue(params.search);
 
   const access = await getAccessLevel();
+  const isAuthenticated = access === "authenticated";
 
-  // The CMS adapter handles authorization and price selection.
+  // The CMS adapter remains responsible for authorization,
+  // product visibility, and server-side price selection.
   const [products, categories] = await Promise.all([
     getProducts(access, {
       category: selectedCategory,
@@ -44,58 +45,133 @@ async function CatalogContent({
   ]);
 
   return (
-    <main className="min-h-screen bg-[#F8F7F4] text-[#171717]">
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
-        <header className="mb-12 flex flex-wrap items-center justify-between gap-6">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.08em]"
-          >
-            SIGNAL<span className="text-[#8EA92C]">.</span>
-          </Link>
+    <main className="min-h-screen bg-[#292D30] text-[#F3F4F2]">
+      {/* Catalog introduction */}
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#171A1D]">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-40 -top-72 h-[650px] w-[650px] rounded-full bg-[#D9F36A]/[0.045] blur-[100px]"
+        />
 
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
-
-            {access === "authenticated" ? (
-              <Link href="/partner" className="hover:underline">
-                Partner portal
+        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-14 lg:px-10 lg:pb-20 lg:pt-20">
+          <div className="mb-12 flex flex-wrap items-center justify-between gap-5">
+            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em]">
+              <Link
+                href="/"
+                className="text-white/45 transition hover:text-white"
+              >
+                Home
               </Link>
-            ) : (
-              <Link href="/login" className="hover:underline">
-                Partner login
+
+              <ArrowRight
+                size={13}
+                className="text-white/30"
+                aria-hidden="true"
+              />
+
+              <span className="text-[#D9F36A]">
+                Product catalog
+              </span>
+            </div>
+
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/65">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D9F36A]" />
+              {isAuthenticated
+                ? "Partner catalog"
+                : "Public catalog"}
+            </span>
+          </div>
+
+          <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
+            <div>
+              <p className="mb-6 text-xs font-semibold uppercase tracking-[0.24em] text-[#D9F36A]">
+                SIGNAL / Technology portfolio
+              </p>
+
+              <h1 className="max-w-4xl text-[clamp(3.2rem,6vw,6rem)] font-semibold leading-[0.98] tracking-[-0.07em]">
+                Technology that
+                <br />
+                <span className="text-[#D9F36A]">
+                  moves you forward.
+                </span>
+              </h1>
+
+              <p className="mt-7 max-w-xl text-base leading-8 text-[#A6ADB1] sm:text-lg">
+                Explore connected communication, monitoring, and
+                infrastructure solutions engineered for demanding
+                environments.
+              </p>
+            </div>
+
+            {!isAuthenticated && (
+              <Link
+                href="/login"
+                className="group flex max-w-sm items-center gap-4 rounded-2xl border border-[#D9F36A]/20 bg-[#D9F36A]/[0.06] p-5 transition hover:border-[#D9F36A]/50"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D9F36A]/10 text-[#D9F36A]">
+                  <LockKeyhole size={20} />
+                </span>
+
+                <span className="flex-1">
+                  <span className="block text-sm font-semibold">
+                    Partner access
+                  </span>
+                  <span className="mt-1 block text-xs leading-5 text-white/50">
+                    Unlock additional products and partner pricing.
+                  </span>
+                </span>
+
+                <ArrowUpRight
+                  size={19}
+                  className="shrink-0 text-[#D9F36A] transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                />
               </Link>
             )}
-          </nav>
-        </header>
+          </div>
 
-        <section className="mb-12">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">
-            SIGNAL / Product catalog
-          </p>
-
-          <h1 className="max-w-3xl text-5xl font-semibold tracking-[-0.06em] md:text-7xl">
-            Technology that moves you forward.
-          </h1>
-
-          <p className="mt-6 max-w-2xl text-lg text-neutral-600">
-            Explore our communication, monitoring, and infrastructure
-            solutions.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-14 flex flex-wrap gap-3 border-t border-white/10 pt-7">
             {categories.map((category) => (
-              <span
+              <Link
                 key={category}
-                className="rounded-full border border-neutral-300 px-4 py-2 text-sm"
+                href={{
+                  pathname: "/catalog",
+                  query: { category },
+                }}
+                className={`rounded-full border px-4 py-2 text-xs font-medium transition ${
+                  selectedCategory === category
+                    ? "border-[#D9F36A] bg-[#D9F36A] text-[#171A1D]"
+                    : "border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+                }`}
               >
                 {category}
-              </span>
+              </Link>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
+
+      {/* Catalog controls and product results */}
+      <section className="mx-auto max-w-7xl px-6 py-12 lg:px-10 lg:py-16">
+        <div className="mb-9 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#D9F36A]">
+              Explore the collection
+            </p>
+
+            <h2
+              id="products-heading"
+              className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl"
+            >
+              All products
+            </h2>
+          </div>
+
+          <p className="text-sm text-[#B9BEC0]">
+            {products.length}{" "}
+            {products.length === 1 ? "product" : "products"}{" "}
+            available
+          </p>
+        </div>
 
         <CatalogFilters
           categories={categories}
@@ -103,44 +179,57 @@ async function CatalogContent({
           search={search}
         />
 
-        <section aria-labelledby="products-heading">
+        <section
+          aria-labelledby="products-heading"
+          className="mt-10"
+        >
           <CatalogGrid
             products={products}
-            isAuthenticated={access === "authenticated"}
+            isAuthenticated={isAuthenticated}
           />
         </section>
-      </div>
+      </section>
     </main>
   );
 }
 
-// This fallback can be rendered without accessing session data.
 function CatalogLoading() {
   return (
     <main
-      className="min-h-screen bg-[#F8F7F4] px-6 py-12 text-[#171717] lg:px-10"
+      className="min-h-screen bg-[#292D30] text-[#F3F4F2]"
       role="status"
       aria-label="Loading product catalog"
     >
-      <div className="mx-auto max-w-7xl animate-pulse">
-        <div className="mb-12 flex items-center justify-between">
-          <div className="h-7 w-28 rounded bg-neutral-200" />
-          <div className="h-5 w-36 rounded bg-neutral-200" />
-        </div>
+      <div className="border-b border-white/10 bg-[#171A1D]">
+        <div className="mx-auto max-w-7xl animate-pulse px-6 py-20 lg:px-10">
+          <div className="mb-12 h-4 w-40 rounded bg-white/10" />
 
-        <div className="mb-12 space-y-5">
-          <div className="h-4 w-36 rounded bg-neutral-200" />
-          <div className="h-14 max-w-2xl rounded bg-neutral-200" />
-          <div className="h-6 max-w-lg rounded bg-neutral-200" />
-        </div>
+          <div className="space-y-5">
+            <div className="h-4 w-44 rounded bg-white/10" />
+            <div className="h-16 max-w-3xl rounded bg-white/10" />
+            <div className="h-16 max-w-xl rounded bg-white/10" />
+            <div className="h-5 max-w-lg rounded bg-white/10" />
+          </div>
 
-        <div className="mb-10 h-28 rounded-2xl bg-neutral-200" />
+          <div className="mt-14 flex flex-wrap gap-3">
+            {Array.from({ length: 3 }, (_, index) => (
+              <div
+                key={index}
+                className="h-9 w-40 rounded-full bg-white/10"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl animate-pulse px-6 py-14 lg:px-10">
+        <div className="mb-10 h-24 rounded-2xl bg-white/10" />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }, (_, index) => (
             <div
               key={index}
-              className="h-96 rounded-2xl bg-neutral-200"
+              className="h-96 rounded-2xl bg-white/10"
             />
           ))}
         </div>

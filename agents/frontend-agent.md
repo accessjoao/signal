@@ -87,42 +87,61 @@ Prefer:
 - CSS transitions.
 - Small, focused components.
 
-Do not introduce a UI framework, animation library, icon package, or state-management library without a clear justification and approval.
+Do not introduce a UI framework, animation library, icon package, or state-management library without a clear justification and approval. Existing approved dependencies can be reused without adding replacements.
 
 Do not add dependencies simply to reproduce a visual effect that can be implemented with CSS.
 
 ---
 
+
 ## 5. Visual Direction
 
-Follow `context/ui-context.md` as the source of truth for SIGNAL's visual identity.
+Follow `context/ui-context.md` as the authoritative source
+for SIGNAL's visual identity.
 
-SIGNAL should look like a contemporary, design-led enterprise technology brand.
+SIGNAL is a premium enterprise technology brand with a dark,
+technical, and modern visual language.
 
 ### Key Characteristics
 
-- Oversized editorial typography.
-- Generous whitespace.
-- Strong visual hierarchy.
-- Minimal navigation.
-- Asymmetric image-and-text compositions.
-- Large, relevant photography.
-- High-contrast sections.
-- Restrained accent colors.
-- Purposeful interactions.
-- Clean, functional product presentation.
+- Near-black and graphite backgrounds.
+- Elevated charcoal surfaces with subtle borders.
+- Lime-green (`#D9F36A`) as the primary accent.
+- Geist typography with bold, tightly tracked headings.
+- Strong visual hierarchy and generous spacing.
+- Minimal, responsive navigation.
+- Rounded controls and carefully balanced layouts.
+- Abstract technical visuals rather than generic stock imagery.
+- Purposeful motion with reduced-motion support.
+- Consistent product presentation across all routes.
 
-Avoid generic SaaS templates and conventional e-commerce layouts.
+### Color Direction
+
+Use the established palette:
+
+- Main background: `#0B0D0F`
+- Hero and dark sections: `#171A1D`
+- Catalog background: `#292D30`
+- Elevated surfaces: `#383D40`
+- Primary text: `#F3F4F2`
+- Secondary text: `#B9BEC0`
+- Accent: `#D9F36A`
+
+Prefer existing design tokens and utilities when available.
 
 ### Important Distinction
 
 The homepage should be visually expressive.
 
-The catalog should be practical and easy to navigate.
+The catalog should prioritize product discovery and usability.
 
-Both must share the same typography, colors, spacing, and component language.
+The login, partner, drawer, and standalone product experiences
+must feel like parts of the same application.
 
-Do not make every page look like a marketing landing page.
+Avoid reverting to the previous light editorial design.
+
+Avoid generic SaaS dashboards, conventional e-commerce
+templates, excessive badges, and unnecessary visual effects.
 
 ---
 
@@ -178,21 +197,42 @@ Implement the homepage as SIGNAL's primary marketing experience.
 
 ### Hero
 
-The hero should include:
+The homepage hero communicates SIGNAL's brand identity.
 
-- Strong editorial headline.
-- Concise supporting copy.
-- Primary CTA to the catalog.
-- Secondary CTA to Partner Access.
-- Relevant, visually impactful imagery.
+Use the established headline:
 
-Suggested headline:
+**Connection is everything.**
 
-**Technology that keeps the world connected.**
+Supporting copy should emphasize professional communications,
+monitoring, and infrastructure technology.
 
-The hero should feel premium and distinctive.
+The hero includes:
 
-Avoid generic dashboard illustrations, excessive gradients, and decorative animations.
+- Oversized, high-contrast typography.
+- Lime-green emphasis on "everything."
+- Primary CTA: Explore the catalog.
+- Secondary CTA: Discover solutions.
+- Three concentric orbital rings.
+- Three lime-green spheres rotating independently.
+- A stationary central sphere.
+- Subtle ambient lighting.
+
+The orbital animation is implemented using CSS rather than
+a dedicated animation library.
+
+Maintain the established animation speeds:
+
+- Outer orbit: 28 seconds, clockwise.
+- Middle orbit: 19 seconds, counterclockwise.
+- Inner orbit: 12 seconds, clockwise.
+
+Respect `prefers-reduced-motion`.
+
+The visual must scale proportionally on mobile without
+causing horizontal overflow.
+
+Do not reintroduce the previous tilted equipment card,
+network-status panels, or generic dashboard illustrations.
 
 ### Product Categories
 
@@ -394,6 +434,33 @@ Keep specifications easy to scan.
 
 Prefer semantic lists or definition lists over decorative tables when suitable.
 
+
+### Product Navigation
+
+SIGNAL supports two product detail experiences:
+
+1. An intercepted product route displayed in a slide-out drawer
+   when navigating from the catalog.
+2. A standalone product page when opening or refreshing
+   a product URL directly.
+
+Both experiences must:
+
+- Use the shared `ProductDetails` component.
+- Display the same server-authorized product information.
+- Preserve the correct role-based pricing.
+- Handle missing images and invalid products.
+- Follow SIGNAL's graphite visual system.
+
+The drawer must support keyboard dismissal, focus management,
+background scroll locking, and reduced-motion preferences.
+
+The standalone page must include clear navigation back
+to the catalog.
+
+Do not duplicate authentication or pricing logic
+between these experiences.
+
 ### Error Handling
 
 If a product slug is invalid or unavailable, render the application's not-found experience.
@@ -442,14 +509,17 @@ Do not create an unrelated dashboard interface.
 
 Design mobile-first.
 
-### Mobile
+### Mobile Navigation and Presentation
 
-- Single-column product grid.
-- Stacked editorial layouts.
-- Readable oversized headings.
-- Comfortable touch targets.
-- Accessible navigation.
-- No horizontal overflow.
+- Keep the SIGNAL wordmark visible.
+- Use compact navigation controls.
+- Display "Partner" instead of "Partner access" on narrow screens
+  where appropriate.
+- Avoid horizontal overflow and compressed navigation buttons.
+- Scale the homepage orbital visualization proportionally.
+- Maintain comfortable spacing around product information.
+- Ensure product drawers remain usable on narrow screens.
+- Preserve accessible touch targets and keyboard interactions.
 
 ### Tablet
 

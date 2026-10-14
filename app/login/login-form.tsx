@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { ArrowRight, ArrowUpRight, LoaderCircle } from "lucide-react";
 
 import { login, type LoginState } from "../actions/auth";
 
@@ -15,111 +16,124 @@ export default function LoginForm() {
     initialState,
   );
 
+  const inputClassName =
+    "w-full rounded-xl border border-white/10 bg-[#303538] px-4 py-4 text-sm text-[#F3F4F2] placeholder:text-white/30 outline-none transition-all duration-200 hover:border-white/20 focus:border-[#D9F36A]/60 focus:ring-2 focus:ring-[#D9F36A]/10 disabled:cursor-not-allowed disabled:opacity-50";
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#F8F7F4] px-6 py-20">
-      <div className="w-full max-w-md">
-        <Link
-          href="/"
-          className="mb-12 inline-flex items-center gap-2 text-sm font-semibold tracking-[0.2em] text-[#171717]"
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D9F36A] text-lg font-bold tracking-normal">
-            S
-          </span>
-          SIGNAL
-        </Link>
+    <div>
+      <form action={formAction} noValidate className="space-y-6">
+        {/* Username */}
+        <div>
+          <label
+            htmlFor="username"
+            className="mb-2.5 block text-sm font-medium text-[#F3F4F2]"
+          >
+            Username
+          </label>
 
-        <div className="mb-10">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
-            Partner access
-          </p>
-
-          <h1 className="text-4xl font-semibold tracking-tight text-[#171717] sm:text-5xl">
-            Welcome back.
-          </h1>
-
-          <p className="mt-4 text-base leading-relaxed text-neutral-600">
-            Sign in to explore the complete SIGNAL catalog
-            and access exclusive partner pricing.
-          </p>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            required
+            disabled={isPending}
+            aria-invalid={Boolean(state.error)}
+            aria-describedby={
+              state.error ? "login-error" : undefined
+            }
+            placeholder="Enter your username"
+            className={inputClassName}
+          />
         </div>
 
-        <form action={formAction} className="space-y-6">
-          <div>
-            <label
-              htmlFor="username"
-              className="mb-2 block text-sm font-medium text-[#171717]"
-            >
-              Username
-            </label>
-
-            <input
-              id="username"
-              name="username"
-              type="text"
-              autoComplete="username"
-              required
-              disabled={isPending}
-              aria-invalid={Boolean(state.error)}
-              aria-describedby={state.error ? "login-error" : undefined}
-              placeholder="Enter your username"
-              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3.5 text-[#171717] outline-none transition focus:border-[#171717] focus:ring-2 focus:ring-[#D9F36A] disabled:opacity-60"
-            />
-          </div>
-
-          <div>
+        {/* Password */}
+        <div>
+          <div className="mb-2.5 flex items-center justify-between">
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium text-[#171717]"
+              className="block text-sm font-medium text-[#F3F4F2]"
             >
               Password
             </label>
 
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              disabled={isPending}
-              aria-invalid={Boolean(state.error)}
-              aria-describedby={state.error ? "login-error" : undefined}
-              placeholder="Enter your password"
-              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3.5 text-[#171717] outline-none transition focus:border-[#171717] focus:ring-2 focus:ring-[#D9F36A] disabled:opacity-60"
-            />
+            <span className="text-xs text-white/35">
+              Demo environment
+            </span>
           </div>
 
-          {state.error && (
-            <p
-              id="login-error"
-              role="alert"
-              className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
-            >
-              {state.error}
-            </p>
-          )}
-
-          <button
-            type="submit"
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
             disabled={isPending}
-            className="flex w-full items-center justify-center rounded-full bg-[#171717] px-6 py-4 text-sm font-semibold text-white transition hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171717] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isPending ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
+            aria-invalid={Boolean(state.error)}
+            aria-describedby={
+              state.error ? "login-error" : undefined
+            }
+            placeholder="Enter your password"
+            className={inputClassName}
+          />
+        </div>
 
-        <p className="mt-6 text-center text-xs leading-relaxed text-neutral-500">
-          Demo access: any non-empty username and password.
+        {/* Authentication error */}
+        {state.error && (
+          <p
+            id="login-error"
+            role="alert"
+            className="rounded-xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-300"
+          >
+            {state.error}
+          </p>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={isPending}
+          className="group flex min-h-14 w-full cursor-pointer items-center justify-between rounded-xl bg-[#D9F36A] px-6 text-sm font-semibold text-[#171A1D] transition-all duration-200 hover:bg-[#E7FF88] hover:shadow-[0_8px_30px_rgba(217,243,106,0.15)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D9F36A] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span>
+            {isPending ? "Signing in..." : "Sign in to SIGNAL"}
+          </span>
+
+          {isPending ? (
+            <LoaderCircle
+              size={20}
+              aria-hidden="true"
+              className="animate-spin"
+            />
+          ) : (
+            <ArrowRight
+              size={20}
+              aria-hidden="true"
+              className="transition-transform duration-200 group-hover:translate-x-1"
+            />
+          )}
+        </button>
+      </form>
+
+      {/* Public catalog navigation */}
+      <div className="mt-8 border-t border-white/10 pt-7">
+        <p className="mb-4 text-xs leading-6 text-[#B9BEC0]">
+          Just browsing? Explore the public catalog
+          without signing in.
         </p>
 
-        <div className="mt-12 border-t border-neutral-200 pt-6">
-          <Link
-            href="/catalog"
-            className="text-sm font-medium text-[#171717] underline-offset-4 hover:underline"
-          >
-            ← Explore the public catalog
-          </Link>
-        </div>
+        <Link
+          href="/catalog"
+          className="group inline-flex items-center gap-2 text-sm font-medium text-[#F3F4F2] transition-colors hover:text-[#D9F36A] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D9F36A]"
+        >
+          Explore public catalog
+          <ArrowUpRight
+            size={17}
+            aria-hidden="true"
+            className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </Link>
       </div>
-    </main>
+    </div>
   );
 }

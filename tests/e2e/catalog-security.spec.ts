@@ -143,6 +143,7 @@ test.describe("Catalog SSR security", () => {
             await expect(
                 page.getByRole("heading", {
                     name: "Core R4 Industrial Router",
+                    level: 1,
                 }),
             ).toBeVisible();
 
