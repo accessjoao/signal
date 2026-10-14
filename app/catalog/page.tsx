@@ -28,7 +28,11 @@ async function CatalogContent({
 
   const params = await searchParams;
 
-  const selectedCategory = getSingleValue(params.category);
+  const rawCategory = getSingleValue(params.category);
+
+  const selectedCategory =
+    rawCategory.toLowerCase() === "all" ? "" : rawCategory;
+
   const search = getSingleValue(params.search);
 
   const access = await getAccessLevel();

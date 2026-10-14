@@ -347,39 +347,6 @@ export default async function Home() {
           </Link>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 bg-[#0B0D0F]">
-        <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10">
-          <div className="flex flex-col justify-between gap-10 sm:flex-row">
-            <div>
-              <p className="text-xl font-bold tracking-[0.16em]">
-                SIGNAL<span className="text-[#D9F36A]">.</span>
-              </p>
-              <p className="mt-3 max-w-xs text-sm leading-6 text-white/45">
-                Connected technology for the moments that matter.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-x-10 gap-y-5 text-sm text-white/60">
-              <Link href="/catalog" className="hover:text-white">
-                Products
-              </Link>
-              <Link href="/login" className="hover:text-white">
-                Partner access
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-16 flex flex-col justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/35 sm:flex-row">
-            <span>© 2026 SIGNAL.</span>
-            <span>
-              Product catalog demonstration · Motorola Solutions
-              technical assessment
-            </span>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

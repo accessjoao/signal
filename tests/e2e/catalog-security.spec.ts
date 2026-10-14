@@ -227,6 +227,7 @@ test.describe("Catalog session and RSC security", () => {
     });
 
 
+
     test("public RSC payload excludes restricted products", async ({
         page,
     }) => {
@@ -236,34 +237,32 @@ test.describe("Catalog session and RSC security", () => {
             page.getByRole("link", { name: "View product" }),
         ).toHaveCount(8);
 
-        // Register before navigation to avoid missing the response.
-        const rscResponsePromise = page.waitForResponse(
+        const rscPayloadPromise = page.waitForResponse(
             (response) => {
                 const contentType =
                     response.headers()["content-type"] ?? "";
 
                 return (
                     response.url().includes("/catalog/") &&
+                    response.request().headers()["rsc"] === "1" &&
                     contentType.includes("text/x-component")
                 );
             },
             { timeout: 15000 },
-        );
+        ).then((response) => response.text());
 
-        // Client-side navigation opens the intercepted product drawer.
         await page
             .getByRole("link", { name: "View product" })
             .first()
             .click();
 
-        await expect(page.getByRole("dialog")).toBeVisible();
+        const payload = await rscPayloadPromise;
 
-        // This test must capture a real RSC response.
-        const rscResponse = await rscResponsePromise;
-        const payload = await rscResponse.text();
+        await expect(page.getByRole("dialog")).toBeVisible();
 
         expect(payload).not.toContain("Core R4 Industrial Router");
         expect(payload).not.toContain("core-r4-industrial-router");
+
         expect(payload).not.toContain("priceAuthenticated");
         expect(payload).not.toContain("priceLoggedOut");
     });

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { SiteHeader } from "@/components/layout/site-header";
 
 import "./globals.css";
+import SiteFooter from "@/components/layout/site-footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,8 @@ export default function RootLayout({
         </Suspense>
 
         {children}
+
+        <SiteFooter />
       </body>
     </html>
   );
