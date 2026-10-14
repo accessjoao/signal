@@ -1,126 +1,110 @@
 # SIGNAL — Progress Tracker
 
 **Updated:** 2026-10-14  
-**Current phase:** Gate A closeout → Task 5, server catalog integration  
-**Source of truth:** `context/assessment-requirements.md` (Motorola requirements). The six context documents and root `AGENTS.md` define implementation and agent workflow.
+**Current phase:** Task 5 complete → Task 6 homepage and responsive UI polish  
+**Source of truth:** `context/assessment-requirements.md` (Motorola assessment); agent instructions in root `AGENTS.md`, `agents/`, and `context/`.
 
 ## Status at a glance
 
 | Workstream | Status | Evidence / next action |
 |---|---|---|
-| Foundation and tooling | Complete | Next.js 16.4.0, React 19.3.0, TypeScript, Tailwind 4; ESLint 9 with matching `eslint-config-next@16.4.0`. Latest lint run passed. |
-| Product model and mock CMS (Task 2) | Complete | 12 fictional products, 3 categories, 8 public + 4 restricted; 28 unit tests previously passed. |
-| Server authentication (Task 3) | Complete | Signed, expiring session cookie; server-side credential validation; login/logout Server Actions; protected partner route; 12 unit tests previously passed. |
-| Login and partner UI (Task 4) | Complete | Accessible login form, error feedback, authenticated redirect, partner page and sign-out. |
-| Gate A: authentication review | Browser checks passed; final closeout pending | **9/9 Playwright tests passed**. Latest ESLint run passed. Re-run TypeScript, Vitest and production build after dependency/config changes before marking gate closed. |
-| Server catalog + SSR privacy (Task 5 / Gate B) | Not started | Highest-priority next implementation and security review. |
-| Catalog UI and interactions (Task 6 / Gate C) | Not started | Cards, detail page, filtering, search, layouts, fallbacks. |
-| Marketing homepage + integration (Tasks 7–8 / Gate D) | Not started | Responsive design, accessibility, regression testing. |
-| Deployment + documentation (Task 9 / Gate E) | Not started | Vercel, README, `AGENT.md`, verified links and submission details. |
+| Foundation and tooling | Complete | Next.js 16.4.0, React 19.3.0, TypeScript, Tailwind 4, ESLint 9 and matching `eslint-config-next@16.4.0`. |
+| Mock CMS and product model | Complete | 12 fictional products in three categories: 8 public, 4 authenticated-only. 28 product unit tests previously passed. |
+| Authentication and partner access | Complete | Signed expiring session cookie, server-side credential validation, login/logout Server Actions, protected `/partner`. 12 auth unit tests previously passed. |
+| Catalog, filtering and product details | Complete | Server-rendered authorized products/prices; search, category filters, Clear Filters; Price First / Specs First; standalone product details and fallback states. |
+| Intercepted product drawer | Complete | Parallel/intercepted routes, animated drawer, Escape/close button, focus handling, scroll lock, filter-preserving return. |
+| SSR authorization and security review | Complete for current implementation; final release verification pending | Public: 8 products; authenticated: 12. Restricted data excluded from tested public HTML and captured RSC navigation; tampered cookie rejected. |
+| Automated tests | Latest reported runs passed | **27/27 Playwright** in full-suite run; **40 Vitest** from earlier runs. Combined **67 tests**, but latest Vitest rerun not yet reported. |
+| Homepage and responsive polish (Task 6) | Next | Review `app/page.tsx`, catalog, drawer and mobile navigation. |
+| Accessibility and UX review (Task 7) | Pending | Keyboard/screen-reader checks, responsive breakpoints, reduced motion, loading/empty states. |
+| Final QA and documentation (Task 8) | Pending | Rerun lint, TypeScript, Vitest, Playwright and production build; finalize README and agent write-up. |
+| Deployment and submission (Task 9) | Pending | Verify GitHub repository, Vercel URL, environment variables, production auth and SSR behavior. |
 
-## Mandatory assessment checklist
+## Motorola assessment checklist
 
 - [x] Next.js App Router, TypeScript, Tailwind CSS and permitted mock JSON CMS.
-- [x] Markdown-defined specialized agents in `agents/` (Orchestrator, Backend, Frontend, Review).
-- [x] Full-stack simulated login accepts any non-empty username and password.
-- [x] Server-issued, signed, expiring session cookie; protected route and logout.
-- [x] Raw products have `priceLoggedOut` and `priceAuthenticated`.
-- [x] Server-only product visibility and authorized-price projection implemented and unit-tested.
-- [ ] Actual catalog renders Set A publicly and A+B when authenticated.
-- [ ] Initial server-rendered HTML contains only authorized products and correct role-specific prices.
-- [ ] Public HTML, serialized RSC responses, navigation/prefetch payloads and client bundles do not expose restricted products or prices.
-- [ ] Price First / Specs First card layouts switch without full-page reload.
-- [ ] Category filtering, text search and explicit Clear Filters control.
-- [ ] Missing-image, empty-results and invalid/inaccessible-slug fallbacks.
-- [ ] Responsive, accessible homepage, catalog, detail, login and partner experiences.
-- [ ] Full app and Markdown agent prompts in one accessible repository.
-- [ ] README with reproducible setup, test commands and real deployment URL.
-- [ ] `AGENT.md` describing roles, prompts, context handoffs, SSR enforcement, trade-offs, actual manual fixes, AI struggles and two-more-weeks improvements.
-- [ ] Verified live deployment and submission details (repository, URL, demo credentials).
+- [x] Specialized Markdown agent definitions (Orchestrator, Backend, Frontend, Review) and context handoffs.
+- [x] Simulated login accepts any non-empty username and password.
+- [x] Server-issued signed, expiring HttpOnly session cookie; protected route and logout.
+- [x] Raw CMS records contain `priceLoggedOut`, `priceAuthenticated`, and visibility.
+- [x] Server projects a single authorized `displayPrice` and filters restricted products before serialization.
+- [x] Public catalog displays Set A (8 products); authenticated catalog displays Sets A+B (12 products).
+- [x] Tested initial HTML responses for unauthorized product and raw pricing leakage.
+- [x] Captured and tested at least one public RSC client-navigation response for restricted content leakage.
+- [x] Price First / Specs First toggle without full-page reload.
+- [x] Category filtering, search and explicit Clear Filters.
+- [x] Missing-image placeholder, empty-results UI and inaccessible/invalid-slug not-found UI.
+- [x] Intercepted product drawer and standalone direct-link detail page.
+- [ ] Complete responsive and accessibility review across homepage, catalog, drawer, login and partner pages.
+- [ ] Finish marketing homepage and visual polish.
+- [ ] Finalize `README.md` with reproducible setup, test instructions and real deployment URL.
+- [ ] Finalize required agent documentation (`AGENT.md` if specified by assessment), including real handoffs, SSR enforcement, manual fixes, AI limitations, tradeoffs and two-week improvement plan.
+- [ ] Run final full checks and verify deployed production behavior.
+- [ ] Confirm repository visibility, live URL and submission details.
 
-## Established architecture and contracts
+## Architecture and contracts
 
-**Routes:** `/`, `/catalog`, `/catalog/[slug]`, `/login`, `/partner`. The catalog routes are planned, not yet implemented.
+**Routes:** `/`, `/catalog`, `/catalog/[slug]`, `/login`, `/partner`; catalog uses a parallel `@drawer` slot and intercepted `(.)[slug]` route.
 
-**Product access:** Set A is public; Set B is authenticated-only. Authenticated users see A+B. Raw `CmsProduct` records retain both prices and visibility, **server-side only**. The frontend-safe `Product` exposes a single authorized `displayPrice` (USD integer cents). The adapter is `getProducts(access, filters?)`, `getProductBySlug(slug, access)`, `getCategories()`. The `access` argument must come from a validated server session, never a client-controlled role. Apply authorization and price projection before filtering, rendering or serialization.
+**Product authorization:** Set A is public; Set B requires a validated server session. Raw `CmsProduct` records and both CMS prices remain server-only. Client-facing `Product` contains a single price, `displayPrice` (USD integer cents). Adapter functions: `getProducts(access, filters?)`, `getProductBySlug(slug, access)`, `getCategories()`. Never derive `access` from client input.
 
-**Mock content:** 12 fictional products across Communication Devices, Video & Monitoring, and Network & Infrastructure. Missing optional images/specifications are normalized; malformed records are omitted; unknown or restricted slugs return `null`. All current product images are intentionally `null` until asset work.
+**Mock CMS:** 12 products across Communication Devices, Video & Monitoring, and Network & Infrastructure. All product images are currently `null`; placeholders are intentional until asset work. Invalid or inaccessible slugs yield no product details.
 
-**Authentication:** HMAC-SHA256 signed tokens, seven-day expiry, `SESSION_SECRET` of at least 32 characters, HttpOnly cookie, SameSite=Lax, Path=/ and Secure in production. Passwords are not persisted. Login and logout use Server Actions; `/partner` checks the session on the server. `/login` redirects authenticated users to `/partner`.
+**Authentication:** HMAC-SHA256 signed token; seven-day expiration; `SESSION_SECRET` at least 32 characters; HttpOnly, SameSite=Lax, Path=/; Secure in production. Login/logout use Server Actions. `/partner` validates access server-side; authenticated `/login` redirects to `/partner`.
 
-**UI direction:** SIGNAL premium enterprise aesthetic: warm off-white, dark ink, lime accents, editorial typography and responsive layouts. Avoid client-side role/pricing selection. Use server-rendered role content and a narrowly scoped Client Component for layout toggling.
+**Rendering:** Next.js 16 request-time `connection()` and Suspense boundaries are used where session-dependent rendering requires them. Catalog product visibility and pricing are resolved before passing sanitized records into Client Components. Streaming not-found routes can display a 404 UI with an HTTP 200 response; this is a known tradeoff, not equivalent to a 404 HTTP status.
+
+**UI:** SIGNAL visual system: warm off-white `#F8F7F4`, dark ink `#171717`, lime `#D9F36A`, editorial typography. Motion handles drawer transitions. Client state is limited to presentation (layout toggle, drawer behavior), never role/pricing decisions.
 
 ## Completed work and evidence
 
-### Task 1a — Foundation/tooling repair (2026-10-13)
+### Task 1 — Foundation and agent workflow (2026-10-13 to 2026-10-14)
 
-A specialized Frontend agent corrected the original `eslint-config-next@14.2.35` mismatch with Next.js 16 / ESLint 9. An independent Review agent verified lint, types, build and configuration behavior. This was an actual bounded agent handoff, not just a prompt definition.
+Created specialized Markdown agent definitions and shared context. An independent Frontend agent corrected an ESLint/Next.js dependency mismatch, followed by Review agent verification. A later local regression reintroduced `eslint-config-next@14.2.35`; manual repair restored `eslint-config-next@16.4.0` and Next.js 16 flat ESLint config. Record both episodes accurately in final agent documentation.
 
-**Later local regression (2026-10-14):** The installed package again showed `eslint-config-next@14.2.35`, producing module-resolution and non-iterable-import errors. Guided manual repair installed `eslint-config-next@16.4.0` and restored the Next.js 16 flat-config imports. The user confirmed `npm.cmd ls` showed compatible versions and `npm.cmd run lint` passed. Preserve this recurrence as a real troubleshooting episode in `AGENT.md`; do not imply the initial fix remained intact throughout.
+### Task 2 — CMS model and adapter (2026-10-14)
 
-### Task 2 — Product data and CMS adapter (2026-10-14)
-
-The Backend agent completed/recovered the product implementation and an independent Review agent inspected it. Files include `types/product.ts`, `data/products.json`, `lib/products/product-rules.ts`, `lib/cms/products.ts`, `tests/products.test.ts` and `vitest.config.mts`. Earlier reported verification: **28/28 product tests**, lint, types and production build passed. No catalog page or client product component was built in this task.
+Implemented `types/product.ts`, `data/products.json`, `lib/products/product-rules.ts`, `lib/cms/products.ts`, `tests/products.test.ts`, and `vitest.config.mts`. Backend agent work and independent Review agent inspection were reported. **28/28 product unit tests** previously passed.
 
 ### Task 3 — Server authentication (2026-10-14)
 
-Implemented in a **ChatGPT-guided, user-applied file-by-file workflow**, not a new independent Codex agent run. Files: `lib/auth/session-token.ts`, `lib/auth/session.ts`, `lib/auth/auth.ts`, `app/actions/auth.ts`, `app/partner/page.tsx`, `tests/auth.test.ts`, `tests/mocks/server-only.ts`, and a test-only alias in `vitest.config.mts`. Local `.env.local` holds the ignored secret. Earlier reported verification: **12/12 auth unit tests**, 40 total unit tests, lint, types and build passed.
+Implemented `lib/auth/session-token.ts`, `lib/auth/session.ts`, `lib/auth/auth.ts`, `app/actions/auth.ts`, `app/partner/page.tsx`, `tests/auth.test.ts`, and `tests/mocks/server-only.ts`. ChatGPT-guided, user-applied file-by-file implementation; do not claim this was an independent Codex run. Resolved Vitest `server-only` alias and Next.js 16 session-sensitive rendering issues. **12/12 auth unit tests** previously passed.
 
-**Issues resolved:** Vitest required an alias for Next.js's `server-only` sentinel. Next.js 16 Cache Components and session-dependent rendering required request-time `connection()` in the login/partner routes; `/partner` also uses `export const instant = false`. Record both as actual implementation corrections, not speculative risks.
+### Task 4 — Login and partner UI (2026-10-14)
 
-### Task 4 — Login and partner presentation (2026-10-14)
+Built `app/login/page.tsx`, `app/login/login-form.tsx`, and protected partner presentation. Browser testing covered valid login, logout, protected-route redirects, cookie attributes, invalid input and tampered cookies. During final regression, the empty-credentials test was repaired: the original test passed an unattached button to `requestSubmit()`, then encountered a Next.js cookies invariant; the final test uses a normal click with native form validation bypassed and targets `#login-error` to avoid Next.js's additional `role="alert"` route announcer.
 
-Implemented `app/login/page.tsx`, `app/login/login-form.tsx` and the styled protected `app/partner/page.tsx`. The user manually confirmed unauthenticated `/partner` redirects to `/login`, login works and authenticated `/partner` loads. Playwright then exercised the full login/logout flow.
+### Task 5 — Catalog, product drawer and SSR security (2026-10-14)
 
-### Gate A — Browser authentication review (2026-10-14)
+**Status: Complete for current requirements.**
 
-Created `playwright.config.ts` and `e2e/auth.spec.ts`; user ran **9 Playwright tests, all passed**:
+- Server-rendered `/catalog` with authorized pricing and visibility, search/category filtering, Clear Filters, and empty/loading states.
+- Client-only Price First / Specs First presentation toggle.
+- Standalone `/catalog/[slug]` detail page and intercepted `@drawer/(.)[slug]` modal route.
+- Motion-powered slide-in/out drawer, backdrop, Escape and close button, focus management, scroll locking and return to filtered catalog.
+- Restricted-product checks using **Core R4 Industrial Router** (`core-r4-industrial-router`): authenticated-only; public CMS price $1,199.00; authorized partner price $999.00.
+- Public HTML checked for restricted names/slugs/prices and raw CMS pricing fields.
+- Authenticated HTML and UI checked for all 12 products and partner pricing.
+- Forged `signal_session` cookie tested and rejected.
+- Public RSC navigation payload inspected for restricted product data. A prior event-listener approach intermittently captured zero responses; replaced with `page.waitForResponse()` registered before client navigation.
+- **Latest full Playwright run: 27/27 passed.** Previous unit runs: **40 Vitest passed** (28 product + 12 auth). Latest combined known passing count: **67**, pending a fresh Vitest rerun.
 
-1. Unauthenticated `/partner` redirects to login.
-2. Non-empty credentials authenticate.
-3. Empty browser form does not create a session.
-4. Session survives refresh.
-5. Authenticated visitor is redirected away from login.
-6. Logout clears the cookie and prevents protected access.
-7. Tampered session cookie is rejected.
-8. Cookie is HttpOnly, SameSite=Lax, Path=/ and not Secure on local HTTP.
-9. Empty credentials are rejected by the server when browser validation is bypassed.
+## Known risks and release checks
 
-**Known warning:** Test 9 sets `novalidate` before React hydration finishes and logs a development hydration mismatch, although the test passes. This is an outstanding test-harness warning, not a demonstrated auth failure. Avoid treating the browser run as warning-free. Production Secure-cookie behavior has not yet been verified on deployment.
+- **SSR privacy:** Continue to ensure raw CMS records, restricted products, and both raw price fields never reach public client props, HTML, metadata, RSC payloads or prefetched data. Existing tests are strong but not exhaustive for all routes/prefetch cases.
+- **Cross-session caching:** Add/verify sequential public and authenticated requests in isolated contexts, especially under production caching behavior.
+- **Streaming status:** Invalid/inaccessible product slugs show not-found UI but can return HTTP 200 due to Suspense streaming. Reassess if the evaluation requires a genuine HTTP 404.
+- **Product imagery:** All CMS image values are currently `null`; decide whether to add licensed images or retain designed placeholders.
+- **Auth environment:** Keep `.env.local` and secrets out of Git. Verify Secure cookie in HTTPS production.
+- **Agent transparency:** Distinguish actual independent agent runs from ChatGPT-guided manual implementation in the final report.
+- **Production readiness:** Latest complete Playwright run passed. Final lint, TypeScript, Vitest, build, deployment, and live security checks are not yet confirmed in this tracker.
 
-**Gate A closeout checklist:**
+## Next action — checkpoint before Task 6
 
-- [x] 9/9 Playwright browser tests passing.
-- [x] Latest ESLint run passing with matched Next.js configuration.
-- [ ] Confirm latest `npx.cmd tsc --noEmit` after the dependency fix.
-- [ ] Confirm latest `npx.cmd vitest run` (expect 40 tests).
-- [ ] Confirm latest `npm.cmd run build` after the dependency fix.
-- [ ] Optionally remove the development hydration warning from test 9 without weakening server-validation coverage.
-- [ ] Update this section with results and commit the checkpoint.
-
-## Remaining plan and review gates
-
-| Stage | Implementation | Blocking review |
-|---|---|---|
-| **Task 5** | Server-render `/catalog` and `/catalog/[slug]` using session-derived access, URL filters, authorized product adapter and not-found handling. | **Gate B:** inspect raw HTML and serialized/RSC responses for public/authenticated users, private slugs, role prices and cross-session cache leakage. |
-| **Task 6** | Catalog/detail cards, fallback media, empty state, category/search/Clear Filters and Price First / Specs First toggle. | **Gate C:** search/filter combinations, URL persistence, no-reload toggle, authorized results, keyboard behavior and edge cases. Recheck Gate B. |
-| **Task 7** | Marketing homepage, navigation/footer, metadata, authorized featured content, imagery and responsive polish. | Review public payloads and usability. |
-| **Task 8** | Final integration, responsive/accessibility checks, complete lint/type/unit/E2E/build and production start. | **Gate D:** all routes at mobile/tablet/desktop, keyboard/focus/labels/contrast and regression checks. |
-| **Task 9** | Vercel deployment, production secret, README, `AGENT.md`, verified repo/live links and submission details. | **Gate E:** production login/logout, Secure cookie, protected route, role prices, public isolation, docs and reproducible setup. |
-
-## Risks and decisions to revisit
-
-- **Highest priority — SSR privacy:** Never pass raw CMS records, both prices or partner-only content to Client Components, public metadata or serialized responses. Verify initial HTML **and** RSC/prefetch payloads, not only the hydrated page.
-- **Session-sensitive caching:** Prevent personalized HTML/data from leaking between authenticated and unauthenticated requests; test sequential requests in separate browser contexts.
-- **Assets:** All mock images currently fall back to `null`; select properly licensed media and ensure partner-only content is not exposed through public assets.
-- **Environment:** Do not commit `.env.local` or a production secret. Confirm production Secure-cookie behavior after deployment.
-- **Execution integrity:** The original independent Frontend/Review and Backend/Review handoffs occurred in Tasks 1a and 2. Tasks 3–4 and Playwright setup were guided in ChatGPT and executed by the user. The final `AGENT.md` must report this distinction accurately.
-- **Release dependencies:** GitHub repository accessibility, Vercel access, actual deployed URL and production behavior remain unverified.
-
-## Next action
-
-**Close Gate A:** run `npx.cmd tsc --noEmit`, `npx.cmd vitest run`, and `npm.cmd run build`; record results above, inspect `git status` for secrets/generated files, then commit. **After that, start Task 5** with the server catalog entry point and its privacy boundary.
+1. Run `npm run lint`, `npx.cmd tsc --noEmit`, `npx.cmd vitest run`, `npx.cmd playwright test`, and `npm run build`; record actual results.
+2. Review `git status` for `.env` files and generated artifacts; commit and push to the current branch after checks pass.
+3. Begin **Task 6 — Homepage and responsive UI polish**, starting with `app/page.tsx`.
 
 ## Tracker maintenance rule
 
-Update this file after each meaningful task or review gate. Keep current status at the top, retain concise evidence and actual agent/human handoffs, distinguish completed checks from pending ones, and avoid duplicating the full history in multiple sections. Motorola's assessment remains authoritative.
+Update this tracker after each meaningful milestone. Keep current status at the top; record observed evidence rather than assumptions; preserve real agent/human handoffs and unresolved tradeoffs. Motorola's assessment requirements remain authoritative.

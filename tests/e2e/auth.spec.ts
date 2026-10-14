@@ -143,40 +143,35 @@ test.describe("SIGNAL authentication", () => {
         expect(sessionCookie?.secure).toBe(false);
     });
 
+
     test("rejects empty credentials on the server", async ({ page }) => {
         await page.goto("/login");
 
-        const submitButton = page.getByRole("button", {
-            name: "Sign in",
+        // Wait until React has hydrated the form.
+        await expect(
+            page.getByRole("button", { name: "Sign in" }),
+        ).toBeEnabled();
+
+        await page.locator("form").evaluate((form) => {
+            (form as HTMLFormElement).noValidate = true;
         });
 
-        await expect(submitButton).toBeEnabled();
-        
-        await submitButton.evaluate((button) => {
-            const form = (button as HTMLButtonElement).form;
+        // Submit through Playwright's normal browser interaction
+        // so React handles the Server Action.
+        await page.getByRole("button", { name: "Sign in" }).click();
 
-            if (!form) {
-                throw new Error("Login form not found");
-            }
-
-            form.requestSubmit(
-                Object.assign(document.createElement("button"), {
-                    type: "submit",
-                    formNoValidate: true,
-                }),
-            );
-        });
-
-        await expect(page).toHaveURL(/\/login$/);
-
+        // The Server Action should return a validation error.
         await expect(page.locator("#login-error")).toHaveText(
             "Please enter a username and password.",
         );
 
+        // Invalid credentials must not create an authenticated session.
+        await expect(page).toHaveURL(/\/login$/);
+
         const cookies = await page.context().cookies();
 
         expect(
-            cookies.some((cookie) => cookie.name === "signal_session"),
-        ).toBe(false);
+            cookies.find((cookie) => cookie.name === "signal_session"),
+        ).toBeUndefined();
     });
 });
