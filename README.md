@@ -10,7 +10,24 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 
 **Developer:** [Joao Felipe Silveira](https://github.com/accessjoao)
 
-**Live demo:** Add the verified Vercel deployment URL [here](https://signal-seven-omega.vercel.app/).
+
+## Live Demo
+
+**Production:** https://signal-seven-omega.vercel.app/
+
+**Deployment:** Vercel
+
+**Production verification:** Completed successfully.
+
+All 11 production verification checks passed, including:
+
+- HTTPS availability
+- Authentication and secure session cookies
+- Server-side product authorization and role-based pricing
+- Public and authenticated session isolation
+- Catalog search and category filtering
+- Product drawer and direct product URLs
+- Logout and protected route enforcement
 
 **Development report:** [AGENT.md](AGENT.md)
 
@@ -587,29 +604,29 @@ The application requires the Node.js runtime because session signing uses `node:
 
 After deployment, verify:
 
-- [ ] Homepage and catalog load over HTTPS.
+- [x] Homepage and catalog load over HTTPS.
 
-- [ ] Login accepts nonempty demo credentials.
+- [x] Login accepts nonempty demo credentials.
 
-- [ ] Session cookies have the Secure and HttpOnly attributes.
+- [x] Session cookies have the Secure and HttpOnly attributes.
 
-- [ ] `/partner` redirects unauthenticated visitors.
+- [x] `/partner` redirects unauthenticated visitors.
 
-- [ ] Authenticated visitors see all 12 products.
+- [x] Authenticated visitors see all 12 products.
 
-- [ ] Public visitors see only the eight public products.
+- [x] Public visitors see only the eight public products.
 
-- [ ] Public responses do not expose authenticated-only prices.
+- [x] Public responses do not expose authenticated-only prices.
 
-- [ ] Search and category filters work correctly.
+- [x] Search and category filters work correctly.
 
-- [ ] Product drawer and direct detail URLs work.
+- [x] Product drawer and direct detail URLs work.
 
-- [ ] Logout removes partner access.
+- [x] Logout removes partner access.
 
-- [ ] Public requests remain correctly authorized after authenticated traffic.
+- [x] Public requests remain correctly authorized after authenticated traffic.
 
-The verified production URL will be added after deployment.
+The verified production URL: https://signal-seven-omega.vercel.app/
 
 ---
 
