@@ -408,51 +408,33 @@ This kept engineering effort focused on the assessment's core requirements and m
 
 ## 10. What I Would Improve With Two Additional Weeks
 
-### Week 1 — Production confidence and security
+### Week 1 — Contentful Integration
 
-My first priority would be extending verification from local development to a deployed production environment.
-
-I would:
-
-- Run authentication and authorization smoke tests over HTTPS.
-
-- Verify Secure-cookie behavior and protected-route redirects.
-
-- Test public and authenticated HTML, RSC, and prefetch responses.
-
-- Validate that cache behavior cannot mix content across access levels.
-
-- Strengthen the forged-cookie browser test to ensure the modified cookie is actually delivered to the configured host.
-
-- Expand automated coverage for filter history, category reset, and combined query behavior.
-
-- Validate first-click drawer behavior under slow hydration and across browsers.
-
-- Establish repeatable CI checks for lint, TypeScript, unit tests, browser tests, and production builds.
-
-### Week 2 — Accessibility, resilience, and maintainability
-
-The second week would focus on product quality and longer-term maintainability.
+My main priority would be replacing the mocked CMS JSON with a real Contentful integration.
 
 I would:
 
-- Conduct a comprehensive keyboard and screen-reader review.
+- Create a Contentful space and define a Product content model with fields for name, description, category, specifications, images, visibility, and both pricing options.
+- Add the existing 12 products to Contentful.
+- Update the CMS adapter to fetch product data from Contentful instead of the local JSON file.
+- Keep authentication, product visibility, and pricing decisions on the server.
+- Test that public visitors only receive public products and prices, while authenticated visitors can access the full catalog.
 
-- Validate focus management, reduced motion, and color contrast.
+This would make the catalog easier to maintain because product information could be updated in Contentful without changing the application code.
 
-- Extend cross-browser and responsive testing.
+### Week 2 — User Experience and Testing
 
-- Add licensed product imagery and robust image-load fallbacks.
+The second week would focus on improving the catalog experience and making sure the Contentful integration works reliably.
 
-- Consolidate repeated design tokens and reusable components.
+I would:
 
-- Measure performance and address demonstrated bottlenecks.
+- Add real product images through Contentful's media library.
+- Improve loading and error states when product data is unavailable.
+- Refine the mobile layout and product drawer interactions.
+- Test search, category filtering, and both display layouts using Contentful data.
+- Add automated tests for the new CMS integration.
 
-- Improve the reproducibility of agent handoffs and verification evidence.
-
-- Evaluate replacing the mocked CMS adapter with a real Contentful integration.
-
-A real identity provider or additional infrastructure would be considered only if the product requirements expanded beyond this assessment.
+These improvements would bring SIGNAL closer to a real-world product catalog while keeping the architecture simple and maintainable.
 
 ---
 
