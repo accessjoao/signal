@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { useSyncExternalStore } from "react";
 import {
   ArrowUpRight,
   Network,
@@ -14,12 +16,19 @@ type ProductCardProps = {
   product: Product;
   layout: ProductCardLayout;
   isAuthenticated: boolean;
+  onViewProduct: (productId: string) => void;
 };
 
 const priceFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
+
+const subscribeToHydration = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
+const productButtonClassName = "flex min-h-12 w-full cursor-pointer items-center justify-between rounded-xl bg-[#D9F36A] px-5 text-sm font-semibold text-[#171A1D] transition-colors hover:bg-[#e7ff88] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D9F36A]";
 
 // Static mapping keeps component references stable across renders.
 const categoryIcons = {
@@ -32,14 +41,20 @@ export default function ProductCard({
   product,
   layout,
   isAuthenticated,
+  onViewProduct,
 }: ProductCardProps) {
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    clientSnapshot,
+    serverSnapshot,
+  );
   const price = priceFormatter.format(
     product.displayPrice / 100,
   );
 
   const CategoryIcon =
     categoryIcons[
-    product.category as keyof typeof categoryIcons
+      product.category as keyof typeof categoryIcons
     ] ?? Radio;
 
   const priceSection = (
@@ -135,10 +150,12 @@ export default function ProductCard({
             </>
           )}
 
-          <Link
-            href={`/catalog/${product.slug}`}
-            prefetch={true}
-            className="flex min-h-12 w-full items-center justify-between rounded-xl bg-[#D9F36A] px-5 text-sm font-semibold text-[#171A1D] transition-colors hover:bg-[#e7ff88] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D9F36A]"
+          <button
+            type="button"
+            disabled={!isHydrated}
+            onClick={() => onViewProduct(product.id)}
+            aria-haspopup="dialog"
+            className={productButtonClassName}
           >
             View product
             <ArrowUpRight
@@ -146,7 +163,7 @@ export default function ProductCard({
               aria-hidden="true"
               className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
             />
-          </Link>
+          </button>
         </div>
       </div>
     </article>

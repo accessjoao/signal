@@ -87,7 +87,7 @@ The catalog uses a **graphite** background and elevated graphite product cards. 
 
 There are two intentionally distinct presentations of the same product:
 
-**Client navigation from catalog:** An intercepted route renders the product inside a right-side animated drawer, with an overlay, close action, Escape support, focus handling, scroll lock, and reduced-motion support.
+**Catalog interaction:** A button selects a server-authorized product in React state without navigation and renders it inside a right-side animated drawer, with an overlay, close action, Escape support, focus handling, scroll lock, and reduced-motion support.
 
 **Direct URL or refresh (`/catalog/[slug]`):** A full standalone product page with dark hero, breadcrumbs, category/product heading, generous product detail content, and a link back to the catalog. It must not duplicate the shared global header.
 
@@ -109,7 +109,7 @@ Both use the shared `ProductDetails` component and the same **server-authorized 
 ## 9. Interaction and motion
 
 - Prefer CSS transitions for hover/focus/selected states.
-- Motion library is already used for the product drawer; do not add another animation dependency without need.
+- The drawer uses CSS transitions with a visible resting state; do not add an animation dependency without need.
 - The homepage orbital animation is a **deliberate exception** to the general preference against continuous decorative motion.
 - Avoid parallax, heavy scroll reveals, and animations that delay essential content.
 - Honor reduced-motion preferences for both the orbital visual and drawer interactions.
@@ -125,7 +125,7 @@ The UI must not undermine the assessment's full-stack requirements:
 4. Each raw product can contain `priceLoggedOut` and `priceAuthenticated`, but **only server-selected `displayPrice` and authorized product data** reach client components.
 5. Never serialize partner-only products, restricted prices, or raw CMS objects into unauthenticated HTML/RSC payloads.
 6. Keep Server Components as the default; use Client Components only for actual interaction.
-7. Request-time authentication and authorization remain in server code, including drawer and standalone routes.
+7. Request-time authentication and authorization remain in server code, including catalog data supplied to the drawer and standalone product routes.
 8. Preserve category/search behavior, layout toggle, not-found handling, and missing-image fallbacks.
 
 Do not add shopping cart, checkout, payments, reviews, wishlists, user registration, or unrelated analytics.

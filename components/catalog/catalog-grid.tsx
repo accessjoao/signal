@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowUpDown, SearchX } from "lucide-react";
 
 import ProductCard, {
@@ -9,6 +8,8 @@ import ProductCard, {
 } from "@/components/catalog/product-card";
 
 import type { Product } from "@/types/product";
+import ProductDetails from "@/components/catalog/product-details";
+import ProductDrawer from "@/components/catalog/product-drawer";
 
 type CatalogGridProps = {
   products: Product[];
@@ -21,6 +22,11 @@ export default function CatalogGrid({
 }: CatalogGridProps) {
   const [layout, setLayout] =
     useState<ProductCardLayout>("price-first");
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+
+  // Resolve from the current server-authorized list, never retain a stale product object.
+  const selectedProduct = products.find((product) => product.id === selectedProductId);
+  const closeProduct = useCallback(() => setSelectedProductId(null), []);
 
   return (
     <div>
@@ -107,9 +113,19 @@ export default function CatalogGrid({
               product={product}
               layout={layout}
               isAuthenticated={isAuthenticated}
+              onViewProduct={setSelectedProductId}
             />
           ))}
         </div>
+      )}
+      {selectedProduct && (
+        <ProductDrawer key={selectedProduct.id} onClose={closeProduct}>
+          <ProductDetails
+            product={selectedProduct}
+            isAuthenticated={isAuthenticated}
+            headingLevel={2}
+          />
+        </ProductDrawer>
       )}
     </div>
   );

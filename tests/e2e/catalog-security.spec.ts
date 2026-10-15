@@ -87,7 +87,7 @@ test.describe("Catalog SSR security", () => {
         ).toHaveCount(0);
 
         await expect(
-            page.getByRole("link", {
+            page.getByRole("button", {
                 name: "View product",
             }),
         ).toHaveCount(8);
@@ -127,7 +127,7 @@ test.describe("Catalog SSR security", () => {
             await page.goto("/catalog");
 
             await expect(
-                page.getByRole("link", { name: "View product" }),
+                page.getByRole("button", { name: "View product" }),
             ).toHaveCount(12);
 
             await expect(
@@ -209,7 +209,7 @@ test.describe("Catalog session and RSC security", () => {
 
         // The server must reject the forged cookie.
         await expect(
-            page.getByRole("link", { name: "View product" }),
+            page.getByRole("button", { name: "View product" }),
         ).toHaveCount(8);
 
         await expect(
@@ -234,7 +234,7 @@ test.describe("Catalog session and RSC security", () => {
         await page.goto("/catalog");
 
         await expect(
-            page.getByRole("link", { name: "View product" }),
+            page.getByRole("button", { name: "View product" }),
         ).toHaveCount(8);
 
         const rscPayloadPromise = page.waitForResponse(
@@ -243,7 +243,8 @@ test.describe("Catalog session and RSC security", () => {
                     response.headers()["content-type"] ?? "";
 
                 return (
-                    response.url().includes("/catalog/") &&
+                    new URL(response.url()).pathname === "/catalog" &&
+                    new URL(response.url()).searchParams.get("search") === "relay" &&
                     response.request().headers()["rsc"] === "1" &&
                     contentType.includes("text/x-component")
                 );
@@ -251,14 +252,14 @@ test.describe("Catalog session and RSC security", () => {
             { timeout: 15000 },
         ).then((response) => response.text());
 
-        await page
-            .getByRole("link", { name: "View product" })
-            .first()
-            .click();
+        // Drawer opening is local state; filtering still exercises catalog RSC authorization.
+        await page.getByRole("searchbox", { name: "Search products" }).fill("relay");
+        await page.getByRole("button", { name: "Apply filters" }).click();
 
         const payload = await rscPayloadPromise;
 
-        await expect(page.getByRole("dialog")).toBeVisible();
+        await expect(page).toHaveURL(/search=relay/);
+        await expect(page.getByRole("button", { name: "View product" })).toHaveCount(2);
 
         expect(payload).not.toContain("Core R4 Industrial Router");
         expect(payload).not.toContain("core-r4-industrial-router");

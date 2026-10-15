@@ -10,7 +10,7 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 
 **Developer:** [Joao Felipe Silveira](https://github.com/accessjoao)
 
-**Live demo:** Pending deployment
+**Live demo:** Add the verified Vercel deployment URL here.
 
 **Development report:** [AGENT.md](AGENT.md)
 
@@ -21,34 +21,55 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 ### Authentication and authorization
 
 - Simulated authentication accepting any nonempty username and password.
+
 - Server-issued, HMAC-SHA256-signed session cookies.
+
 - HttpOnly, SameSite, and production Secure-cookie protection.
+
 - Protected partner route with server-side access checks.
+
 - Login, logout, and session persistence across refreshes.
+
 - Server-controlled product visibility and pricing.
 
 ### Product catalog
 
 - 12 fictional enterprise technology products across three categories.
+
 - Eight publicly available products (Set A).
+
 - Four additional authenticated-only products (Set B).
+
 - Public and authenticated prices selected on the server.
+
 - Search by product name or description.
+
 - Category filtering and combined queries.
+
 - Shareable, URL-based filter state.
+
 - Price First / Specs First layout switching without a page reload.
-- Product details presented through an intercepted drawer or standalone page.
+
+- Product details presented through a state-controlled drawer or standalone page.
+
 - Loading, empty-results, missing-image, and not-found states.
 
 ### User experience
 
 - Responsive graphite-and-lime design system.
+
 - Marketing homepage with animated CSS orbital illustration.
+
 - Accessible form controls and interaction feedback.
+
 - Smooth App Router navigation with scroll preservation.
+
 - Browser Back/Forward synchronization for catalog filters.
+
 - Keyboard-accessible product drawer with Escape dismissal.
+
 - Reduced-motion support for animations.
+
 - Shared navigation and footer.
 
 ---
@@ -56,16 +77,27 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 ## Technology Stack
 
 | Layer | Technology |
+
 |---|---|
+
 | Framework | Next.js 16.4.0, App Router |
+
 | UI | React 19.3.0, TypeScript |
+
 | Styling | Tailwind CSS 4 |
+
 | Content | Mocked CMS JSON with server-only adapter |
+
 | Authentication | Next.js Server Actions, Node.js crypto, signed cookies |
+
 | UI components | Radix Select, Lucide React |
-| Animation | Motion |
+
+| Animation | CSS transitions and keyframes |
+
 | Unit testing | Vitest |
+
 | End-to-end testing | Playwright, Chromium |
+
 | Deployment | Vercel |
 
 The project uses Next.js Server Components for data retrieval, authentication-dependent rendering, and product authorization. Client Components are limited to interactive presentation behavior.
@@ -77,14 +109,19 @@ The project uses Next.js Server Components for data retrieval, authentication-de
 ### Prerequisites
 
 - Node.js 22
+
 - npm
+
 - Git
 
 ### 1. Clone the repository
 
 ```bash
+
 git clone https://github.com/accessjoao/signal.git
+
 cd signal
+
 ```
 
 The repository URL above assumes the project will be published as `accessjoao/signal`. Update it if the final repository name differs.
@@ -92,7 +129,9 @@ The repository URL above assumes the project will be published as `accessjoao/si
 ### 2. Install dependencies
 
 ```bash
+
 npm ci
+
 ```
 
 ### 3. Configure environment variables
@@ -100,7 +139,9 @@ npm ci
 Create a `.env.local` file in the project root:
 
 ```env
+
 SESSION_SECRET=replace-with-your-own-random-secret-at-least-32-characters
+
 ```
 
 `SESSION_SECRET` is required for signing and validating session tokens.
@@ -110,7 +151,9 @@ Use a cryptographically random value of at least 32 characters. Keep it server-s
 For example, generate a secret with Node.js:
 
 ```bash
+
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+
 ```
 
 No database, CMS API key, or external authentication provider is required.
@@ -118,7 +161,9 @@ No database, CMS API key, or external authentication provider is required.
 ### 4. Start the development server
 
 ```bash
+
 npm run dev
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -134,8 +179,11 @@ After signing in, the application displays additional partner-only products and 
 ### Production build
 
 ```bash
+
 npm run build
+
 npm run start
+
 ```
 
 On Windows PowerShell, use `npm.cmd` or `npx.cmd` if execution policy blocks the corresponding PowerShell script launchers.
@@ -145,11 +193,17 @@ On Windows PowerShell, use `npm.cmd` or `npx.cmd` if execution policy blocks the
 ## Application Routes
 
 | Route | Description | Access |
+
 |---|---|---|
+
 | `/` | Marketing homepage and featured products | Public |
+
 | `/catalog` | Searchable product catalog with role-based pricing | Public / authenticated |
-| `/catalog/[slug]` | Product details, with intercepted drawer navigation | Based on product visibility |
+
+| `/catalog/[slug]` | Standalone product details for direct URLs | Based on product visibility |
+
 | `/login` | Simulated authentication | Public |
+
 | `/partner` | Partner landing page | Authenticated only |
 
 The homepage deliberately displays public featured-product pricing, even for authenticated visitors.
@@ -163,72 +217,119 @@ The catalog and product-detail routes resolve visibility and pricing using the c
 SIGNAL separates data access, business rules, authentication, and presentation.
 
 ```text
+
 app/
-  actions/
-    auth.ts                 Authentication Server Actions
-  catalog/
-    [slug]/                 Standalone product details
-    @drawer/
-      (.)[slug]/            Intercepted product drawer
-  login/                    Login page
-  partner/                  Protected partner page
-  page.tsx                  Homepage
-  layout.tsx                Shared application layout
+
+  actions/
+
+    auth.ts                 Authentication Server Actions
+
+  catalog/
+
+    [slug]/                 Standalone product details
+
+  login/                    Login page
+
+  partner/                  Protected partner page
+
+  page.tsx                  Homepage
+
+  layout.tsx                Shared application layout
 
 components/
-  catalog/                  Catalog UI, filters, cards, drawer
-  layout/                   Shared navigation and footer
+
+  catalog/                  Catalog UI, filters, cards, drawer
+
+  layout/                   Shared navigation and footer
 
 lib/
-  auth/                     Credentials, signed sessions, cookies
-  cms/                      Server-only product adapter
-  products/                 Visibility, pricing, filtering
 
-types/                      Frontend-safe product contracts
-data/products.json          Mock CMS content
+  auth/                     Credentials, signed sessions, cookies
+
+  cms/                      Server-only product adapter
+
+  products/                 Visibility, pricing, filtering
+
+types/                      Frontend-safe product contracts
+
+data/products.json          Mock CMS content
 
 tests/
-  e2e/                      Playwright browser tests
 
-agents/                     Specialized AI agent instructions
-context/                    Requirements, architecture, workflow, history
+  e2e/                      Playwright browser tests
 
-AGENTS.md                   Root AI development instructions
-AGENT.md                    AI-assisted development report
-README.md                   Project documentation
+agents/                     Specialized AI agent instructions
+
+context/                    Requirements, architecture, workflow, history
+
+AGENTS.md                   Root AI development instructions
+
+AGENT.md                    AI-assisted development report
+
+README.md                   Project documentation
+
 ```
 
 ### Data flow
 
 ```text
+
 Request
-   |
-   v
+
+   |
+
+   v
+
 Next.js Server Component
-   |
-   v
+
+   |
+
+   v
+
 Server-validated session
-   |
-   v
+
+   |
+
+   v
+
 Access level: public / authenticated
-   |
-   v
+
+   |
+
+   v
+
 Server-only CMS adapter
-   |
-   +-- Filter unauthorized products
-   |
-   +-- Select authorized price
-   |
-   +-- Project approved fields
-   |
-   v
+
+   |
+
+   +-- Filter unauthorized products
+
+   |
+
+   +-- Select authorized price
+
+   |
+
+   +-- Project approved fields
+
+   |
+
+   v
+
 Sanitized Product data
-   |
-   v
+
+   |
+
+   v
+
 Server-rendered catalog
-   |
-   v
+
+   |
+
+   v
+
 Client presentation and interactions
+
 ```
 
 The frontend never needs access to raw CMS pricing fields or client-controlled authorization decisions.
@@ -250,11 +351,17 @@ The session token contains a random identifier and expiration timestamp, not the
 The session implementation uses:
 
 - HMAC-SHA256 signatures.
+
 - Timing-safe signature verification.
+
 - Expiration validation.
+
 - HttpOnly cookies.
+
 - SameSite=Lax.
+
 - Secure cookies in production.
+
 - Server-side access checks.
 
 The `signal_session` cookie has a seven-day expiration.
@@ -268,8 +375,11 @@ This is appropriate for the assessment's simulated authentication requirement, n
 The mocked CMS contains two product sets and two price fields per product.
 
 | Visitor | Visible products | Price selected |
+
 |---|---|---|
+
 | Public | Set A — 8 products | `priceLoggedOut` |
+
 | Authenticated | Sets A + B — 12 products | `priceAuthenticated` |
 
 Both raw price fields remain in the CMS model.
@@ -278,7 +388,7 @@ Before returning product data, the server selects the appropriate price and proj
 
 The frontend does not receive `priceLoggedOut`, `priceAuthenticated`, or restricted products through the intended public rendering paths.
 
-Product authorization is applied consistently to catalog results, intercepted product details, and standalone product-detail pages.
+The drawer consumes only the catalog's server-authorized products and single display price. Standalone product-detail pages independently enforce server-side authorization.
 
 ### Server-side rendering
 
@@ -299,11 +409,13 @@ Filters use shareable URL parameters.
 Examples:
 
 ```text
+
 /catalog?search=relay
 
 /catalog?category=Communication%20Devices
 
 /catalog?category=Communication%20Devices&search=relay
+
 ```
 
 Search matches product names and descriptions case-insensitively.
@@ -313,7 +425,9 @@ Category filtering supports exact category labels, and the route normalizes `cat
 The filter form navigates using Next.js App Router:
 
 ```tsx
+
 router.push(url, { scroll: false });
+
 ```
 
 This preserves scroll position and avoids a full document reload.
@@ -332,7 +446,7 @@ The authorized `displayPrice` remains unchanged.
 
 ### Product detail drawer
 
-Selecting a product from the catalog opens an intercepted route in a drawer while preserving catalog context.
+Selecting View product opens a React-state-controlled drawer without navigation. The URL, filters, and catalog layout stay unchanged. Closing clears the selection after the CSS exit animation. Direct `/catalog/[slug]` URLs still render standalone details; drawer state is not encoded in browser history.
 
 The drawer supports dismissal through its close control, backdrop, and Escape key, along with focus handling and body scroll locking.
 
@@ -349,10 +463,15 @@ The assessment required the application to be developed through specialized AI a
 SIGNAL implements this structure through four roles:
 
 | Agent | Responsibility |
+
 |---|---|
+
 | **Orchestrator** | Task planning, context selection, delegation, handoffs, and acceptance |
+
 | **Backend Agent** | CMS data, product contracts, authentication, authorization, and server-side business rules |
+
 | **Frontend Agent** | Responsive UI, catalog interactions, product details, and accessibility |
+
 | **Review Agent** | Independent verification, security inspection, testing, and regression analysis |
 
 ### Shared context
@@ -367,16 +486,21 @@ The `context/` directory contains assessment requirements, architecture decision
 
 The workflow emphasizes:
 
-1. Reading the relevant requirements and shared context.
-2. Defining bounded tasks and explicit acceptance criteria.
-3. Assigning responsibilities to specialized agents.
-4. Reviewing implementation against shared contracts.
-5. Running automated verification.
-6. Recording decisions, defects, and handoffs.
+1\. Reading the relevant requirements and shared context.
+
+2\. Defining bounded tasks and explicit acceptance criteria.
+
+3\. Assigning responsibilities to specialized agents.
+
+4\. Reviewing implementation against shared contracts.
+
+5\. Running automated verification.
+
+6\. Recording decisions, defects, and handoffs.
 
 Independent agent execution was used in documented phases. Other phases involved developer-directed AI assistance and manual integration.
 
-For a detailed account of the workflow, agent contributions, technical challenges, developer interventions, and proposed improvements, see **[AGENT.md](AGENT.md)**.
+For a detailed account of the workflow, agent contributions, technical challenges, developer interventions, and proposed improvements, see **[AGENT.md](**&#x41;GENT.m&#x64;**)**.
 
 ---
 
@@ -387,9 +511,13 @@ SIGNAL includes automated tests covering product business rules, authentication,
 ### Static analysis and unit tests
 
 ```bash
+
 npm run lint
+
 npx tsc --noEmit
+
 npx vitest run
+
 ```
 
 The unit test suite contains **40 tests**, covering product logic and authentication.
@@ -403,30 +531,42 @@ Authentication tests verify input validation, token integrity, malformed session
 Install Playwright Chromium:
 
 ```bash
+
 npx playwright install chromium
+
 ```
 
 Run the browser suite:
 
 ```bash
+
 npx playwright test
+
 ```
 
-The Playwright suite contains **27 tests**, covering authentication, protected routes, session behavior, product visibility, server-rendered data, React Server Components responses, and product navigation.
+The Playwright suite covers authentication, protected routes, session behavior, product visibility, server-rendered data, React Server Components responses, and product navigation.
 
 Security-oriented browser tests inspect actual server responses rather than relying exclusively on visible UI state.
 
 ### Latest local verification
 
-| Check | Result |
-|---|---|
-| ESLint | Passed |
-| TypeScript | Passed |
-| Vitest | 40 tests passed |
-| Next.js production build | Passed |
-| Playwright | 27 tests passed |
+The developer confirmed that lint, TypeScript checks, and the full Playwright suite pass following the state-controlled drawer refactor and accessibility improvements. Vitest and production-build results below are from the most recently documented audit.
 
-The Vitest and production-build results come from the most recent reported Codex audit. The final Playwright, lint, and TypeScript results were confirmed by the developer after the filter-history correction.
+| Check | Result |
+
+|---|---|
+
+| ESLint | Passed |
+
+| TypeScript | Passed |
+
+| Vitest | 40 tests passed |
+
+| Next.js production build | Passed |
+
+| Playwright | Passed after final drawer refactor (latest count not recorded here) |
+
+The Vitest and production-build results come from the most recent documented Codex audit. The developer subsequently confirmed passing Playwright, lint, and TypeScript checks after the drawer refactor and accessibility cleanup.
 
 These are local results, not claims of production verification.
 
@@ -446,16 +586,22 @@ SIGNAL is designed for deployment on Vercel.
 
 ### Vercel configuration
 
-1. Import the GitHub repository into Vercel.
-2. Select the Next.js framework preset.
-3. Configure `SESSION_SECRET` in the environment variables.
-4. Use the standard Next.js build process.
-5. Deploy.
+1\. Import the GitHub repository into Vercel.
+
+2\. Select the Next.js framework preset.
+
+3\. Configure `SESSION_SECRET` in the environment variables.
+
+4\. Use the standard Next.js build process.
+
+5\. Deploy.
 
 Recommended build command:
 
 ```bash
+
 npm run build
+
 ```
 
 The application requires the Node.js runtime because session signing uses `node:crypto`.
@@ -465,15 +611,25 @@ The application requires the Node.js runtime because session signing uses `node:
 After deployment, verify:
 
 - [ ] Homepage and catalog load over HTTPS.
+
 - [ ] Login accepts nonempty demo credentials.
+
 - [ ] Session cookies have the Secure and HttpOnly attributes.
+
 - [ ] `/partner` redirects unauthenticated visitors.
+
 - [ ] Authenticated visitors see all 12 products.
+
 - [ ] Public visitors see only the eight public products.
+
 - [ ] Public responses do not expose authenticated-only prices.
+
 - [ ] Search and category filters work correctly.
+
 - [ ] Product drawer and direct detail URLs work.
+
 - [ ] Logout removes partner access.
+
 - [ ] Public requests remain correctly authorized after authenticated traffic.
 
 The verified production URL will be added after deployment.
@@ -488,7 +644,7 @@ The verified production URL will be added after deployment.
 
 **Server-selected pricing:** Keeping pricing decisions on the server simplifies frontend responsibilities and protects raw CMS fields from unintended serialization.
 
-**Intercepted routing:** The drawer improves browsing continuity while introducing additional navigation and history considerations.
+**Drawer state:** Opening details requires an interactive catalog and does not create a shareable URL or browser-history entry. Direct product URLs remain available.
 
 **Placeholder imagery:** Category-specific icon treatments provide consistent presentation without relying on external assets. A dedicated failed-network-image recovery path is not yet implemented.
 
@@ -503,12 +659,19 @@ The verified production URL will be added after deployment.
 With additional development time, priorities would include:
 
 - Production authentication and cache-isolation testing.
+
 - Continuous integration for lint, types, unit tests, and browser tests.
+
 - Expanded keyboard, screen-reader, and cross-browser validation.
+
 - Stronger production RSC and prefetch security coverage.
+
 - Improved image loading and fallback behavior.
+
 - Consolidated design tokens and component documentation.
+
 - Performance measurement and targeted optimization.
+
 - Optional integration with a live Contentful space.
 
 See [AGENT.md](AGENT.md) for the detailed two-week improvement plan.

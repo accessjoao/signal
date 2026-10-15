@@ -17,13 +17,21 @@ Rather than relying on a single prompt to generate the application, I organized 
 ### Delivered capabilities
 
 - Simulated authentication using server-issued, signed session cookies.
+
 - Protected routes and server-side authorization.
+
 - Public and authenticated product sets with role-specific pricing.
+
 - Server-side product filtering and sanitized data contracts.
+
 - Responsive catalog with search, category filters, and layout switching.
-- Intercepted product-detail drawer with direct-link support.
+
+- State-controlled product-detail drawer and standalone direct URLs.
+
 - Accessible interaction patterns, loading feedback, and responsive layouts.
+
 - Automated unit, integration-oriented, and browser security tests.
+
 - Markdown-based agent instructions, shared context, and development tracking.
 
 The implementation prioritizes security boundaries, maintainability, and a coherent user experience without adding infrastructure beyond the assessment's scope.
@@ -46,7 +54,7 @@ Structured the development process around specialized Markdown-defined roles, bo
 
 **Technical decision-making**
 
-Selected a mocked CMS adapter, stateless signed sessions, server-rendered product data, and Next.js intercepted routes to satisfy the assessment without unnecessary infrastructure.
+Selected a mocked CMS adapter, stateless signed sessions, and server-rendered product data. Initially used intercepted routes for the product drawer, then replaced them with simpler React state after first-click reliability issues.
 
 **Implementation and integration**
 
@@ -69,10 +77,15 @@ The final application reflects a combination of specialized agent execution, AI-
 The development system is defined through Markdown instructions rather than a custom orchestration service.
 
 | Agent | Primary responsibility | Key constraints |
+
 |---|---|---|
+
 | **Orchestrator** | Task decomposition, sequencing, shared context, handoffs, and acceptance criteria | Maintains scope and coordinates dependencies |
+
 | **Backend Agent** | Product modeling, CMS adapter, authentication, authorization, server rendering, and business-rule tests | Owns security-sensitive decisions and sanitized data contracts |
+
 | **Frontend Agent** | Catalog presentation, responsive UI, filters, product drawer, and interaction design | Consumes approved product contracts without making authorization decisions |
+
 | **Review Agent** | Independent requirements review, security inspection, regression analysis, and verification | Reports findings with evidence and actionable recommendations |
 
 ### Instruction hierarchy
@@ -80,10 +93,15 @@ The development system is defined through Markdown instructions rather than a cu
 The system uses:
 
 - `AGENTS.md` — shared project instructions and development rules.
+
 - `agents/orchestrator.md` — coordination and handoff responsibilities.
+
 - `agents/backend-agent.md` — backend ownership and security constraints.
+
 - `agents/frontend-agent.md` — UI responsibilities and data boundaries.
+
 - `agents/review-agent.md` — independent verification expectations.
+
 - `context/` — requirements, architecture, standards, design direction, workflow, and progress tracking.
 
 The assessment requirements take precedence over implementation preferences.
@@ -94,12 +112,17 @@ This hierarchy reduces ambiguity, prevents agents from redefining shared interfa
 
 Tasks were designed around a repeatable workflow:
 
-1. Establish the relevant requirements, existing implementation, and constraints.
-2. Define a bounded objective, owned files, dependencies, and acceptance criteria.
-3. Implement the change within the assigned responsibility.
-4. Run applicable verification checks.
-5. Return a structured handoff documenting changes, decisions, test results, and outstanding issues.
-6. Review the result, address defects, and update project context.
+1\. Establish the relevant requirements, existing implementation, and constraints.
+
+2\. Define a bounded objective, owned files, dependencies, and acceptance criteria.
+
+3\. Implement the change within the assigned responsibility.
+
+4\. Run applicable verification checks.
+
+5\. Return a structured handoff documenting changes, decisions, test results, and outstanding issues.
+
+6\. Review the result, address defects, and update project context.
 
 For example, the product-data phase required the Backend Agent to preserve both CMS price fields while exposing only one authorized display price to frontend components.
 
@@ -163,7 +186,7 @@ The application distinguishes public and authenticated access using server-valid
 
 Protected content is not secured merely by hiding UI elements. The server determines which products and prices may be returned before rendering or serialization.
 
-The catalog and product-detail routes use server-side access resolution, and both intercepted and standalone product details enforce the same product authorization rules.
+The catalog and product-detail routes use server-side access resolution, and the state-controlled drawer consumes the authorized catalog contract while standalone details independently enforce product authorization.
 
 ### Signed session cookies
 
@@ -174,11 +197,17 @@ The server issues a signed session token containing a random identifier and expi
 Security measures include:
 
 - HMAC-SHA256 token signing.
+
 - Timing-safe signature comparison.
+
 - Token expiration validation.
+
 - HttpOnly session cookies.
+
 - SameSite cookie protection.
+
 - Secure cookies in production.
+
 - Server-side protected-route checks.
 
 This is intentionally simulated authentication, not a production identity system. It demonstrates session integrity and authorization boundaries without introducing an account database or external identity provider.
@@ -188,6 +217,7 @@ This is intentionally simulated authentication, not a production identity system
 The mocked CMS retains the assessment-required fields:
 
 - `priceLoggedOut`
+
 - `priceAuthenticated`
 
 The server-side adapter selects the appropriate price and returns a sanitized product representation containing a single `displayPrice`.
@@ -208,7 +238,7 @@ This division preserves the benefits of server-rendered content while keeping th
 
 ### Consistent authorization across routes
 
-Product details can be opened through an intercepted catalog drawer or directly through a standalone URL.
+Product details open through catalog React state without navigation, or through a standalone URL on direct navigation.
 
 Both paths use the same server-side product access rules.
 
@@ -231,11 +261,17 @@ The homepage introduces the product concept through a branded hero, while the ca
 The catalog supports:
 
 - Search by product name or description.
+
 - Category filtering.
+
 - Combined search and category queries.
+
 - Price First and Specs First layouts.
+
 - Responsive product cards.
+
 - Clear loading and pending states.
+
 - Browser-history-aware navigation.
 
 Filters are submitted through Next.js App Router navigation using `router.push()` with `scroll: false`, avoiding unnecessary page jumps.
@@ -246,7 +282,7 @@ I addressed this by tying the form's state lifecycle to the applied search and c
 
 ### Product details
 
-The intercepted drawer provides a focused product view without losing catalog context.
+The state-controlled drawer provides a focused product view without changing the catalog URL.
 
 Direct URLs render a standalone product page.
 
@@ -267,26 +303,38 @@ Verification was incorporated throughout development rather than deferred until 
 ### Automated coverage
 
 | Test layer | Coverage |
+
 |---|---|
+
 | **Product unit tests** | Product data integrity, role visibility, price selection, sanitized fields, filtering, lookup, and malformed data |
+
 | **Authentication unit tests** | Credential validation, signed sessions, tampered tokens, expiration, and malformed inputs |
+
 | **Authentication browser tests** | Login, logout, protected routes, session persistence, and cookie behavior |
+
 | **Catalog security browser tests** | Public/authenticated HTML, restricted content exclusion, sanitized pricing, and captured RSC responses |
+
 | **Catalog interaction tests** | Navigation, filtering, layouts, and user-facing behavior |
-| **Product drawer tests** | Intercepted navigation, dismissal, browser history, direct links, and invalid products |
+
+| **Product drawer tests** | Opening without navigation, first-click regression, dismissal, focus/reopening, reduced motion, direct links, and invalid products |
 
 ### Latest verification
+
+The developer subsequently confirmed that lint, TypeScript checks, and the complete Playwright suite pass following the state-controlled drawer refactor and accessibility cleanup. The previously recorded Vitest and production-build results are listed separately below.
 
 The final audit reported:
 
 - **ESLint:** Passed.
+
 - **TypeScript:** Passed.
+
 - **Vitest:** 40 tests passed.
+
 - **Production build:** Passed.
 
-That audit also reported an intermittent drawer-test failure during one full Playwright run, although the affected test passed in isolation.
+An earlier audit reported an intermittent intercepted-route drawer failure. The implementation was subsequently replaced with a state-controlled drawer, and the developer confirmed passing Playwright tests, including repeated first-click regression checks.
 
-Following the subsequent search synchronization correction, I reran the checks and confirmed that lint, TypeScript, and the Playwright suite passed.
+The developer also confirmed that lint, TypeScript, and Playwright checks passed after the later drawer and focus-management changes. Exact updated test counts were not supplied for this documentation revision.
 
 These results describe local verification. Production deployment and HTTPS smoke testing remain separate acceptance steps.
 
@@ -311,17 +359,28 @@ This distinction matters: a test failure caused by its capture mechanism should 
 Several implementation challenges required decisions beyond initial code generation.
 
 | Challenge | Resolution and lesson |
+
 |---|---|
+
 | **Framework/tooling compatibility** | Corrected an ESLint configuration mismatch with the installed Next.js version. Verified configuration rather than assuming generated dependencies were compatible. |
+
 | **Server-only module testing** | Introduced test-specific handling for server-only imports while preserving production boundaries. |
+
 | **Request-time session rendering** | Used Next.js request-time rendering mechanisms and Suspense where required for session-dependent content. |
+
 | **Client-side versus server-side pricing** | Kept price selection in the server adapter and exposed only the authorized display price to the UI. |
+
 | **Category sentinel handling** | Normalized the `all` category at the route boundary so the CMS adapter receives the intended unfiltered request. |
+
 | **Filter navigation experience** | Replaced disruptive form navigation with App Router transitions, pending feedback, and scroll preservation. |
+
 | **Browser Back/Forward synchronization** | Corrected stale search-field state by synchronizing the filter form with applied URL values. |
+
 | **RSC security test reliability** | Adjusted response capture timing without removing or weakening assertions. |
+
 | **Shared footer overflow** | Moved the full-width divider outside the constrained content container to avoid horizontal overflow. |
-| **Intercepted-route development behavior** | Investigated intermittent development navigation failures; a definitive root cause was not established. |
+
+| **Intercepted-route development behavior** | Investigated intermittent first-click navigation failures; replaced intercepted routing with a state-controlled drawer, retaining standalone product URLs. The exact underlying hydration/navigation trigger was not conclusively proven. |
 
 These corrections demonstrate an important part of my development approach: **evaluate generated code against observable behavior, isolate the underlying cause, and apply focused changes without compromising architecture or test coverage.**
 
@@ -351,11 +410,11 @@ Resolving pricing and visibility on the server increases confidence that restric
 
 It also creates a clear responsibility boundary between backend and frontend work.
 
-### Intercepted routes
+### State-controlled drawer
 
-Using Next.js intercepted routes provides a polished product-detail experience while preserving direct links.
+At the developer's request, catalog React state replaced intercepted routes after immediate-click failures reached standalone pages. An independently executed Frontend Agent changed the components and removed the parallel routes; the orchestrator updated tests and documentation, with an independent source review that found no blocking refactor issue. Codex did not run checks during this refactor, as requested; the developer subsequently ran the checks locally and confirmed they passed.
 
-The tradeoff is additional complexity around navigation, browser history, focus management, and automated testing.
+The drawer reuses already-authorized catalog data and CSS animations. It no longer changes the URL or history; standalone product URLs remain available. Interactions require hydration, and the first-click regression remains for local verification.
 
 ### Purposeful scope control
 
@@ -374,12 +433,19 @@ My first priority would be extending verification from local development to a de
 I would:
 
 - Run authentication and authorization smoke tests over HTTPS.
+
 - Verify Secure-cookie behavior and protected-route redirects.
+
 - Test public and authenticated HTML, RSC, and prefetch responses.
+
 - Validate that cache behavior cannot mix content across access levels.
+
 - Strengthen the forged-cookie browser test to ensure the modified cookie is actually delivered to the configured host.
+
 - Expand automated coverage for filter history, category reset, and combined query behavior.
-- Investigate intermittent intercepted-route behavior with reproducible test cases.
+
+- Validate first-click drawer behavior under slow hydration and across browsers.
+
 - Establish repeatable CI checks for lint, TypeScript, unit tests, browser tests, and production builds.
 
 ### Week 2 — Accessibility, resilience, and maintainability
@@ -389,12 +455,19 @@ The second week would focus on product quality and longer-term maintainability.
 I would:
 
 - Conduct a comprehensive keyboard and screen-reader review.
+
 - Validate focus management, reduced motion, and color contrast.
+
 - Extend cross-browser and responsive testing.
+
 - Add licensed product imagery and robust image-load fallbacks.
+
 - Consolidate repeated design tokens and reusable components.
+
 - Measure performance and address demonstrated bottlenecks.
+
 - Improve the reproducibility of agent handoffs and verification evidence.
+
 - Evaluate replacing the mocked CMS adapter with a real Contentful integration.
 
 A real identity provider or additional infrastructure would be considered only if the product requirements expanded beyond this assessment.
@@ -429,9 +502,8 @@ The resulting system is intentionally scoped, technically cohesive, and supporte
 
 ---
 
-*Project: SIGNAL — Motorola Solutions Full Stack Web Developer Technical Assessment*
+**Project: SIGNAL — Motorola Solutions Full Stack Web Developer Technical Assessment**
 
-*Developer: Joao Felipe Silveira*
+**Developer: Joao Felipe Silveira**
 
-*GitHub: https://github.com/accessjoao*
-
+**GitHub: https://github.com/accessjoao**

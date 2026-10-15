@@ -135,6 +135,8 @@ Switching layouts must not reload the page.
 
 Layout switching changes presentation only, not product visibility or pricing.
 
+Catalog product details open in React state without changing the URL. Selection resolves an ID from the current server-authorized product list, which contains only displayPrice. The reusable drawer calls onClose after its CSS exit animation. Direct `/catalog/[slug]` URLs retain standalone rendering and server authorization. No parallel/intercepted drawer routes are used.
+
 ## 9. Component Boundaries
 
 **Server Components**

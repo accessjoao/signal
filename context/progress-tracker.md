@@ -11,9 +11,9 @@
 
 ## 1. Project Status
 
-SIGNAL's core application is implemented, including authentication, server-side authorization, role-based pricing, product browsing, intercepted product details, and the responsive visual design.
+SIGNAL's core application is implemented, including authentication, server-side authorization, role-based pricing, product browsing, state-controlled product details, and the responsive visual design.
 
-Local verification has been completed for the latest implementation. Remaining work centers on repository delivery, Vercel deployment, and production-specific verification.
+The state-controlled drawer refactor is awaiting developer-run checks. Earlier passes below predate this refactor. Remaining work centers on repository delivery, Vercel deployment, and production-specific verification.
 
 ### Workstream summary
 
@@ -25,7 +25,7 @@ Local verification has been completed for the latest implementation. Remaining w
 | Authentication | Complete | Signed sessions, protected routes; 12 auth unit tests |
 | Catalog and role-based pricing | Complete | Server-selected products and prices |
 | Search and category filtering | Complete | URL filters, scroll preservation, history synchronization |
-| Product details and drawer | Complete | Intercepted and standalone routes |
+| Product details and drawer | Implemented; verification pending | React-state drawer and standalone route |
 | Visual redesign | Complete | Graphite/lime design system and responsive layouts |
 | Shared footer | Complete | Global footer, developer attribution, assessment disclaimer |
 | Security testing | Complete for local scope | HTML and RSC privacy assertions |
@@ -62,7 +62,7 @@ Production-specific security and caching behavior remains to be verified after d
 - [x] Price First / Specs First toggle.
 - [x] Missing-image placeholders and empty states.
 - [x] Invalid/inaccessible product handling.
-- [x] Intercepted product drawer and standalone details.
+- [x] State-controlled product drawer and standalone details (latest checks pending).
 - [x] Responsive application styling.
 
 ### Multi-agent development
@@ -109,7 +109,7 @@ Production-specific security and caching behavior remains to be verified after d
 | `/login` | Simulated authentication |
 | `/partner` | Protected partner landing page |
 
-Catalog navigation uses the `@drawer` parallel route and `(.)[slug]` interception.
+CatalogGrid stores a selected product ID and resolves it from the current authorized products. The drawer opens without navigation and clears selection after its CSS exit animation. Parallel/intercepted drawer routes have been removed; direct product URLs remain standalone.
 
 ### Product model
 
@@ -462,9 +462,13 @@ The current Playwright configuration uses Chromium.
 
 The application includes responsive and accessibility-oriented behavior, but comprehensive screen-reader, cross-browser, and WCAG conformance testing has not been established.
 
-### Intercepted routing
+### State-controlled drawer refactor
 
-Intermittent intercepted-route behavior was observed during development. A development-server restart restored expected behavior, but the underlying cause was not conclusively established.
+The developer reported 66 passed and 4 failed in the previous drawer run. All failure snapshots showed standalone product pages; pre-hydration native navigation was the leading explanation, not proven without traces. The developer approved replacing intercepted routes with React state.
+
+An independent Frontend Agent implemented components and route removal. The orchestrator updated drawer tests, security selectors and filter-based RSC coverage, plus documentation. Independent source review found no blocking refactor issue. Existing CSS entry/exit, Escape, backdrop, focus, scroll locking and reduced motion remain. The first-click regression now asserts button-driven opening without URL changes; focus/reopening and reduced-motion coverage were added.
+
+No tests, lint, TypeScript checks or build were executed for this refactor, as requested. Drawer state is not in browser history, and buttons require hydration. Local validation remains pending; deployment remains pending.
 
 ### Delivery
 
@@ -523,3 +527,11 @@ Developer-directed AI assistance and manual corrections are recorded without ass
 The assessment requirements remain authoritative.
 
 Future updates should record completed delivery actions and actual production verification rather than anticipated results.
+
+### Drawer hydration and accessibility follow-up
+
+The developer's repeated state-controlled drawer run reported 82 passed and 8 failed; all failures were immediate first-click cases, with the catalog still visible and no dialog. The developer approved keeping the same SSR button disabled until hydration using useSyncExternalStore. This narrowly scoped readiness gate is retained; no replacement loading UI or routing workaround is used.
+
+A subsequent source review identified focus-containment gaps. The Frontend Agent removed the backdrop from the tab order, added panel fallback focus and outside-focus redirection, filtered non-tabbable controls, and kept the close control focusable during exit. The orchestrator extended the existing focus test with Shift+Tab and programmatic outside focus. Independent Review Agent inspection found no actionable issue for current drawer content. Closing animations, reduced motion, focus restoration, authorization and prices remain unchanged.
+
+No tests, lint, TypeScript checks or build were run for these follow-ups, at the developer's request. Runtime verification remains pending.
