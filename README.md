@@ -10,6 +10,8 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 
 **Developer:** [Joao Felipe Silveira](https://github.com/accessjoao)
 
+<img width="1268" height="770" alt="Signal-app" src="https://github.com/user-attachments/assets/61b885dd-fe95-4999-8c06-9a18691aa431" />
+
 
 ## Live Demo
 
@@ -215,163 +217,46 @@ The catalog and product-detail routes resolve visibility and pricing using the c
 
 ---
 
-## Architecture
+## Application Architecture
 
-SIGNAL separates data access, business rules, authentication, and presentation.
+SIGNAL is built with Next.js App Router, TypeScript, and Tailwind CSS.
 
-```text
+The application separates server-side logic from frontend interactions:
 
-app/
+- **Server Components:** Fetch products, check authentication, and select the correct pricing.
+- **CMS Adapter:** Reads product data from mocked JSON and prepares it for the frontend. It can later be connected to Contentful.
+- **Authentication:** Uses signed session cookies to protect partner routes and restricted products.
+- **Client Components:** Handle search controls, display layouts, and the product drawer.
+- **Testing:** Uses Vitest for unit tests and Playwright for browser testing.
 
-  actions/
+Product visibility and pricing are determined on the server before data is sent to the frontend.
 
-    auth.ts                 Authentication Server Actions
-
-  catalog/
-
-    [slug]/                 Standalone product details
-
-  login/                    Login page
-
-  partner/                  Protected partner page
-
-  page.tsx                  Homepage
-
-  layout.tsx                Shared application layout
-
-components/
-
-  catalog/                  Catalog UI, filters, cards, drawer
-
-  layout/                   Shared navigation and footer
-
-lib/
-
-  auth/                     Credentials, signed sessions, cookies
-
-  cms/                      Server-only product adapter
-
-  products/                 Visibility, pricing, filtering
-
-types/                      Frontend-safe product contracts
-
-data/products.json          Mock CMS content
-
-tests/
-
-  e2e/                      Playwright browser tests
-
-agents/                     Specialized AI agent instructions
-
-context/                    Requirements, architecture, workflow, history
-
-AGENTS.md                   Root AI development instructions
-
-AGENT.md                    AI-assisted development report
-
-README.md                   Project documentation
-
-```
-
-### Data flow
-
-```text
-
-Request
-
-   |
-
-   v
-
-Next.js Server Component
-
-   |
-
-   v
-
-Server-validated session
-
-   |
-
-   v
-
-Access level: public / authenticated
-
-   |
-
-   v
-
-Server-only CMS adapter
-
-   |
-
-   +-- Filter unauthorized products
-
-   |
-
-   +-- Select authorized price
-
-   |
-
-   +-- Project approved fields
-
-   |
-
-   v
-
-Sanitized Product data
-
-   |
-
-   v
-
-Server-rendered catalog
-
-   |
-
-   v
-
-Client presentation and interactions
-
-```
-
-The frontend never needs access to raw CMS pricing fields or client-controlled authorization decisions.
+For details about the multi-agent development architecture, prompting strategy, and agent responsibilities, see [AGENT.md](AGENT.md).
 
 ---
 
+
 ## Authentication and Security
 
-### Simulated login
+### Simulated Login
 
-The application accepts any username and password containing non-whitespace characters, as specified by the assessment.
+As required by the assessment, the application accepts any non-empty username and password.
 
-Successful authentication creates a signed session cookie and redirects the visitor to `/partner`.
+After login, the server creates a signed session cookie and redirects the user to `/partner`.
 
-The session token contains a random identifier and expiration timestamp, not the submitted credentials.
+### Session Security
 
-### Session protection
+The application uses:
 
-The session implementation uses:
+- Signed session cookies to prevent tampering.
+- HttpOnly cookies to prevent JavaScript access.
+- Secure cookies in production over HTTPS.
+- Seven-day session expiration.
+- Server-side checks to protect routes and restricted products.
 
-- HMAC-SHA256 signatures.
+Logging out removes the session cookie.
 
-- Timing-safe signature verification.
-
-- Expiration validation.
-
-- HttpOnly cookies.
-
-- SameSite=Lax.
-
-- Secure cookies in production.
-
-- Server-side access checks.
-
-The `signal_session` cookie has a seven-day expiration.
-
-The session is stateless. Logout removes the browser cookie, but does not centrally revoke a previously copied valid token.
-
-This is appropriate for the assessment's simulated authentication requirement, not a substitute for a production identity provider.
+This authentication system was designed for the assessment. A production application would use real user accounts, secure credential validation, and proper session management.
 
 ### Role-based content and pricing
 
@@ -507,16 +392,12 @@ For a detailed account of the workflow, agent contributions, technical challenge
 
 SIGNAL includes automated tests covering product business rules, authentication, authorization, rendering, and browser interactions.
 
-### Static analysis and unit tests
+### Static Analysis and Unit Tests
 
 ```bash
-
 npm run lint
-
 npx tsc --noEmit
-
 npx vitest run
-
 ```
 
 The unit test suite contains **40 tests**, covering product logic and authentication.
@@ -525,80 +406,29 @@ Product tests verify visibility, pricing, filtering, data projection, lookup, an
 
 Authentication tests verify input validation, token integrity, malformed sessions, and expiration.
 
-### End-to-end tests
+### End-to-End Tests
 
 Install Playwright Chromium:
 
 ```bash
-
 npx playwright install chromium
-
 ```
+
+**Important:** Before running Playwright, make sure the local Next.js development server is stopped. If `npm run dev` is running in another terminal, press `Ctrl + C` to stop it.
+
+Playwright starts its own web server using the configuration in `playwright.config.ts`. Leaving the development server running may cause port conflicts or interfere with test execution.
 
 Run the browser suite:
 
 ```bash
-
 npx playwright test
-
 ```
 
 The Playwright suite covers authentication, protected routes, session behavior, product visibility, server-rendered data, React Server Components responses, and product navigation.
 
 Security-oriented browser tests inspect actual server responses rather than relying exclusively on visible UI state.
 
-### Latest local verification
-
-The developer confirmed that lint, TypeScript checks, and the full Playwright suite pass following the state-controlled drawer refactor and accessibility improvements. Vitest and production-build results below are from the most recently documented audit.
-
-
-| Check | Result |
-|---|---|
-| ESLint | Passed |
-| TypeScript | Passed |
-| Vitest | 40 tests passed |
-| Next.js production build | Passed |
-| Playwright | Passed after final drawer refactor |
-
-The Vitest and production-build results come from the most recent documented Codex audit. The developer subsequently confirmed passing Playwright, lint, and TypeScript checks after the drawer refactor and accessibility cleanup.
-
-These are local results, not claims of production verification.
-
-### Testing limitations
-
-Playwright currently runs against a development server using Chromium.
-
-The suite does not establish comprehensive cross-browser compatibility, WCAG conformance, or production CDN/cache isolation.
-
-One catalog cookie-tampering test uses `localhost` while the configured Playwright base URL uses `127.0.0.1`, which limits what that individual test proves. A separate protected-route tampering test uses the configured host.
-
 ---
-
-## Deployment
-
-SIGNAL is designed for deployment on Vercel.
-
-### Vercel configuration
-
-1\. Import the GitHub repository into Vercel.
-
-2\. Select the Next.js framework preset.
-
-3\. Configure `SESSION_SECRET` in the environment variables.
-
-4\. Use the standard Next.js build process.
-
-5\. Deploy.
-
-Recommended build command:
-
-```bash
-
-npm run build
-
-```
-
-The application requires the Node.js runtime because session signing uses `node:crypto`.
 
 ### Production verification checklist
 
@@ -632,41 +462,34 @@ The verified production URL: https://signal-seven-omega.vercel.app/
 
 ## Design and Implementation Tradeoffs
 
-**Mocked CMS:** The local JSON adapter provides deterministic content and testing without external dependencies. It can be replaced with Contentful while preserving the existing frontend-safe contract.
+**Mocked CMS:** Used local JSON instead of Contentful to keep development and testing simple. The existing adapter can be updated to fetch data from Contentful later.
 
-**Simulated authentication:** Signed stateless sessions demonstrate server-managed access without requiring user accounts or a database. Real authentication, rate limiting, and session revocation are outside the assessment scope.
+**Simulated authentication:** Used signed session cookies instead of building a full authentication system with user accounts and a database.
 
-**Server-selected pricing:** Keeping pricing decisions on the server simplifies frontend responsibilities and protects raw CMS fields from unintended serialization.
+**Server-side pricing:** Product visibility and pricing are handled on the server to prevent restricted information from reaching public users.
 
-**Drawer state:** Opening details requires an interactive catalog and does not create a shareable URL or browser-history entry. Direct product URLs remain available.
+**Product drawer:** Product details open in a drawer without changing the URL. Direct product links still work as standalone pages.
 
-**Placeholder imagery:** Category-specific icon treatments provide consistent presentation without relying on external assets. A dedicated failed-network-image recovery path is not yet implemented.
+**Product images:** Used category-specific icons and placeholders instead of real product images.
 
-**Streaming behavior:** Next.js streaming can render not-found UI after response headers have been sent, meaning some invalid routes may return HTTP 200 rather than HTTP 404.
+**Error handling:** Invalid products display a not-found page, although Next.js streaming may sometimes return an HTTP 200 status.
 
-**Scope control:** Commerce, registration, databases, live CMS editing, and custom orchestration infrastructure were intentionally excluded.
+**Project scope:** Focused on the assessment requirements rather than adding unnecessary features such as shopping carts, databases, or user registration.
 
 ---
 
+
 ## Future Improvements
 
-With additional development time, priorities would include:
+With additional development time, I would focus on:
 
-- Production authentication and cache-isolation testing.
-
-- Continuous integration for lint, types, unit tests, and browser tests.
-
-- Expanded keyboard, screen-reader, and cross-browser validation.
-
-- Stronger production RSC and prefetch security coverage.
-
-- Improved image loading and fallback behavior.
-
-- Consolidated design tokens and component documentation.
-
-- Performance measurement and targeted optimization.
-
-- Optional integration with a live Contentful space.
+- **Contentful integration:** Replace the mocked JSON with a real Contentful space to manage products and categories.
+- **Content management:** Create a Product content model so product details, specifications, pricing, and visibility can be updated without changing the code.
+- **Product images:** Use Contentful's media library to upload and manage real product images.
+- **Real authentication:** Replace the simulated login with a proper authentication system that supports registered users, secure password handling, and account management.
+- **User roles:** Introduce real customer and partner accounts with appropriate access permissions and pricing.
+- **Testing:** Expand automated tests to cover Contentful integration, real authentication, and different user roles.
+- **User experience:** Continue improving mobile responsiveness, accessibility, and loading states.
 
 See [AGENT.md](AGENT.md) for the detailed two-week improvement plan.
 
