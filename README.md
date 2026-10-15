@@ -10,7 +10,7 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 
 **Developer:** [Joao Felipe Silveira](https://github.com/accessjoao)
 
-**Live demo:** Add the verified Vercel deployment URL here.
+**Live demo:** Add the verified Vercel deployment URL [here](https://signal-seven-omega.vercel.app/).
 
 **Development report:** [AGENT.md](AGENT.md)
 
@@ -74,33 +74,24 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 
 ---
 
+
 ## Technology Stack
 
 | Layer | Technology |
-
 |---|---|
-
 | Framework | Next.js 16.4.0, App Router |
-
 | UI | React 19.3.0, TypeScript |
-
 | Styling | Tailwind CSS 4 |
-
 | Content | Mocked CMS JSON with server-only adapter |
-
 | Authentication | Next.js Server Actions, Node.js crypto, signed cookies |
-
 | UI components | Radix Select, Lucide React |
-
 | Animation | CSS transitions and keyframes |
-
 | Unit testing | Vitest |
-
 | End-to-end testing | Playwright, Chromium |
-
 | Deployment | Vercel |
 
 The project uses Next.js Server Components for data retrieval, authentication-dependent rendering, and product authorization. Client Components are limited to interactive presentation behavior.
+
 
 ---
 
@@ -190,20 +181,15 @@ On Windows PowerShell, use `npm.cmd` or `npx.cmd` if execution policy blocks the
 
 ---
 
+
 ## Application Routes
 
 | Route | Description | Access |
-
 |---|---|---|
-
 | `/` | Marketing homepage and featured products | Public |
-
 | `/catalog` | Searchable product catalog with role-based pricing | Public / authenticated |
-
 | `/catalog/[slug]` | Standalone product details for direct URLs | Based on product visibility |
-
 | `/login` | Simulated authentication | Public |
-
 | `/partner` | Partner landing page | Authenticated only |
 
 The homepage deliberately displays public featured-product pricing, even for authenticated visitors.
@@ -374,13 +360,12 @@ This is appropriate for the assessment's simulated authentication requirement, n
 
 The mocked CMS contains two product sets and two price fields per product.
 
+
 | Visitor | Visible products | Price selected |
-
 |---|---|---|
-
 | Public | Set A — 8 products | `priceLoggedOut` |
-
 | Authenticated | Sets A + B — 12 products | `priceAuthenticated` |
+
 
 Both raw price fields remain in the CMS model.
 
@@ -462,17 +447,14 @@ The assessment required the application to be developed through specialized AI a
 
 SIGNAL implements this structure through four roles:
 
+
 | Agent | Responsibility |
-
 |---|---|
-
 | **Orchestrator** | Task planning, context selection, delegation, handoffs, and acceptance |
-
 | **Backend Agent** | CMS data, product contracts, authentication, authorization, and server-side business rules |
-
 | **Frontend Agent** | Responsive UI, catalog interactions, product details, and accessibility |
-
 | **Review Agent** | Independent verification, security inspection, testing, and regression analysis |
+
 
 ### Shared context
 
@@ -552,19 +534,14 @@ Security-oriented browser tests inspect actual server responses rather than rely
 
 The developer confirmed that lint, TypeScript checks, and the full Playwright suite pass following the state-controlled drawer refactor and accessibility improvements. Vitest and production-build results below are from the most recently documented audit.
 
+
 | Check | Result |
-
 |---|---|
-
 | ESLint | Passed |
-
 | TypeScript | Passed |
-
 | Vitest | 40 tests passed |
-
 | Next.js production build | Passed |
-
-| Playwright | Passed after final drawer refactor (latest count not recorded here) |
+| Playwright | Passed after final drawer refactor |
 
 The Vitest and production-build results come from the most recent documented Codex audit. The developer subsequently confirmed passing Playwright, lint, and TypeScript checks after the drawer refactor and accessibility cleanup.
 
