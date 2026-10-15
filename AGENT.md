@@ -76,17 +76,14 @@ The final application reflects a combination of specialized agent execution, AI-
 
 The development system is defined through Markdown instructions rather than a custom orchestration service.
 
+
 | Agent | Primary responsibility | Key constraints |
-
 |---|---|---|
-
 | **Orchestrator** | Task decomposition, sequencing, shared context, handoffs, and acceptance criteria | Maintains scope and coordinates dependencies |
-
 | **Backend Agent** | Product modeling, CMS adapter, authentication, authorization, server rendering, and business-rule tests | Owns security-sensitive decisions and sanitized data contracts |
-
 | **Frontend Agent** | Catalog presentation, responsive UI, filters, product drawer, and interaction design | Consumes approved product contracts without making authorization decisions |
-
 | **Review Agent** | Independent requirements review, security inspection, regression analysis, and verification | Reports findings with evidence and actionable recommendations |
+
 
 ### Instruction hierarchy
 
@@ -302,21 +299,16 @@ Verification was incorporated throughout development rather than deferred until 
 
 ### Automated coverage
 
+
 | Test layer | Coverage |
-
 |---|---|
-
 | **Product unit tests** | Product data integrity, role visibility, price selection, sanitized fields, filtering, lookup, and malformed data |
-
 | **Authentication unit tests** | Credential validation, signed sessions, tampered tokens, expiration, and malformed inputs |
-
 | **Authentication browser tests** | Login, logout, protected routes, session persistence, and cookie behavior |
-
 | **Catalog security browser tests** | Public/authenticated HTML, restricted content exclusion, sanitized pricing, and captured RSC responses |
-
 | **Catalog interaction tests** | Navigation, filtering, layouts, and user-facing behavior |
-
 | **Product drawer tests** | Opening without navigation, first-click regression, dismissal, focus/reopening, reduced motion, direct links, and invalid products |
+
 
 ### Latest verification
 
@@ -358,28 +350,18 @@ This distinction matters: a test failure caused by its capture mechanism should 
 
 Several implementation challenges required decisions beyond initial code generation.
 
+
 | Challenge | Resolution and lesson |
-
 |---|---|
-
 | **Framework/tooling compatibility** | Corrected an ESLint configuration mismatch with the installed Next.js version. Verified configuration rather than assuming generated dependencies were compatible. |
-
 | **Server-only module testing** | Introduced test-specific handling for server-only imports while preserving production boundaries. |
-
 | **Request-time session rendering** | Used Next.js request-time rendering mechanisms and Suspense where required for session-dependent content. |
-
 | **Client-side versus server-side pricing** | Kept price selection in the server adapter and exposed only the authorized display price to the UI. |
-
 | **Category sentinel handling** | Normalized the `all` category at the route boundary so the CMS adapter receives the intended unfiltered request. |
-
 | **Filter navigation experience** | Replaced disruptive form navigation with App Router transitions, pending feedback, and scroll preservation. |
-
 | **Browser Back/Forward synchronization** | Corrected stale search-field state by synchronizing the filter form with applied URL values. |
-
 | **RSC security test reliability** | Adjusted response capture timing without removing or weakening assertions. |
-
 | **Shared footer overflow** | Moved the full-width divider outside the constrained content container to avoid horizontal overflow. |
-
 | **Intercepted-route development behavior** | Investigated intermittent first-click navigation failures; replaced intercepted routing with a state-controlled drawer, retaining standalone product URLs. The exact underlying hydration/navigation trigger was not conclusively proven. |
 
 These corrections demonstrate an important part of my development approach: **evaluate generated code against observable behavior, isolate the underlying cause, and apply focused changes without compromising architecture or test coverage.**
