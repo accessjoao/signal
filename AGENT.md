@@ -410,31 +410,32 @@ This kept engineering effort focused on the assessment's core requirements and m
 
 ### Week 1 — Contentful Integration
 
-My main priority would be replacing the mocked CMS JSON with a real Contentful integration.
+My first priority would be replacing the mocked JSON with a real Contentful integration.
 
 I would:
 
-- Create a Contentful space and define a Product content model with fields for name, description, category, specifications, images, visibility, and both pricing options.
-- Add the existing 12 products to Contentful.
-- Update the CMS adapter to fetch product data from Contentful instead of the local JSON file.
-- Keep authentication, product visibility, and pricing decisions on the server.
-- Test that public visitors only receive public products and prices, while authenticated visitors can access the full catalog.
+- Create a Contentful space and define a Product content model.
+- Move the existing 12 products into Contentful.
+- Update the CMS adapter to fetch products from Contentful.
+- Use Contentful's media library to manage product images.
+- Keep product visibility and pricing decisions on the server.
 
-This would make the catalog easier to maintain because product information could be updated in Contentful without changing the application code.
+This would allow product information, pricing, and images to be managed without changing the application code.
 
-### Week 2 — User Experience and Testing
+### Week 2 — Authentication and User Experience
 
-The second week would focus on improving the catalog experience and making sure the Contentful integration works reliably.
+The second week would focus on making the application more suitable for real users.
 
 I would:
 
-- Add real product images through Contentful's media library.
-- Improve loading and error states when product data is unavailable.
-- Refine the mobile layout and product drawer interactions.
-- Test search, category filtering, and both display layouts using Contentful data.
-- Add automated tests for the new CMS integration.
+- Replace simulated login with real user authentication.
+- Introduce customer and partner accounts with different access permissions.
+- Add secure password handling and proper session management.
+- Improve loading and error states when Contentful data is unavailable.
+- Refine mobile responsiveness and product drawer interactions.
+- Expand automated tests for Contentful integration and authentication.
 
-These improvements would bring SIGNAL closer to a real-world product catalog while keeping the architecture simple and maintainable.
+These improvements would make SIGNAL more practical as a real product catalog while building on the existing Next.js architecture.
 
 ---
 
