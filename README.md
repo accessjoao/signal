@@ -384,7 +384,7 @@ The workflow emphasizes:
 
 Independent agent execution was used in documented phases. Other phases involved developer-directed AI assistance and manual integration.
 
-For a detailed account of the workflow, agent contributions, technical challenges, developer interventions, and proposed improvements, see **[AGENT.md](**&#x41;GENT.m&#x64;**)**.
+For a detailed account of the workflow, agent contributions, technical challenges, developer interventions, and proposed improvements, see [AGENT.md](AGENT.md).
 
 ---
 
