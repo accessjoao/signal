@@ -1,18 +1,18 @@
 # SIGNAL — AI-Assisted Development Report
 
-**Motorola Solutions | Full Stack Web Developer Technical Assessment**
+****Motorola Solutions | Full Stack Web Developer Technical Assessment****
 
 ## 1. Executive Summary
 
-SIGNAL is a full-stack product catalog built with Next.js, TypeScript, Tailwind CSS, and a mocked CMS data source. The application demonstrates server-managed authentication, role-based product visibility and pricing, server-rendered content, and an interactive, responsive product browsing experience.
+SIGNAL is a full-stack product catalog built with Next.js, TypeScript, Tailwind CSS, and a CMS adapter supporting both Contentful and mocked JSON data sources. The application demonstrates server-managed authentication, role-based product visibility and pricing, server-rendered content, and an interactive, responsive product browsing experience.
 
-The project was developed using a **Markdown-driven, multi-agent development framework**, with specialized roles for orchestration, backend engineering, frontend engineering, and independent review.
+The project was developed using a ****Markdown-driven, multi-agent development framework****, with specialized roles for orchestration, backend engineering, frontend engineering, and independent review.
 
 My responsibility was to define the architecture, establish technical constraints, direct and evaluate AI-assisted implementation, resolve integration issues, and verify the resulting application against the assessment requirements.
 
 Rather than relying on a single prompt to generate the application, I organized development around bounded responsibilities, shared context, explicit acceptance criteria, and iterative verification.
 
-**The central engineering principle was that AI agents could accelerate implementation, but architectural decisions, security requirements, integration, and final acceptance remained under my control.**
+****The central engineering principle was that AI agents could accelerate implementation, but architectural decisions, security requirements, integration, and final acceptance remained under my control.****
 
 ### Delivered capabilities
 
@@ -23,6 +23,10 @@ Rather than relying on a single prompt to generate the application, I organized 
 - Public and authenticated product sets with role-specific pricing.
 
 - Server-side product filtering and sanitized data contracts.
+
+- Contentful Delivery API integration with environment-based CMS selection and published product management.
+
+- Contentful-hosted product imagery and reusable visual presentation with category-icon fallbacks.
 
 - Responsive catalog with search, category filters, and layout switching.
 
@@ -44,27 +48,27 @@ I approached the assignment as an engineering lead coordinating AI-assisted deve
 
 My contributions included:
 
-**System architecture**
+****System architecture****
 
 Defined the separation between server-side business rules, CMS data access, session management, and client-side presentation. Established the rule that authentication, product visibility, and price selection must be resolved on the server.
 
-**Agent orchestration**
+****Agent orchestration****
 
 Structured the development process around specialized Markdown-defined roles, bounded tasks, shared contracts, and verification requirements. Used independent agent execution where supported and direct AI-assisted implementation where more appropriate.
 
-**Technical decision-making**
+****Technical decision-making****
 
-Selected a mocked CMS adapter, stateless signed sessions, and server-rendered product data. Initially used intercepted routes for the product drawer, then replaced them with simpler React state after first-click reliability issues.
+Initially selected a mocked CMS adapter for deterministic development, then extended it with a Contentful Delivery API implementation while preserving the server-side product contract. Also selected stateless signed sessions and server-rendered product data. Initially used intercepted routes for the product drawer, then replaced them with simpler React state after first-click reliability issues.
 
-**Implementation and integration**
+****Implementation and integration****
 
 Applied and refined implementation changes, integrated work across application layers, and resolved framework, testing, navigation, and UI issues encountered during development.
 
-**Quality assurance**
+****Quality assurance****
 
 Used automated checks and browser testing to validate functionality, identify regressions, and confirm security-sensitive behavior. Treated generated output as code requiring review rather than as automatically correct.
 
-**Product experience**
+****Product experience****
 
 Directed the visual design toward a cohesive graphite-and-lime interface, with consistent responsive layouts, clear product hierarchy, interactive details, and deliberate navigation behavior.
 
@@ -76,14 +80,17 @@ The final application reflects a combination of specialized agent execution, AI-
 
 The development system is defined through Markdown instructions rather than a custom orchestration service.
 
-
 | Agent | Primary responsibility | Key constraints |
-|---|---|---|
-| **Orchestrator** | Task decomposition, sequencing, shared context, handoffs, and acceptance criteria | Maintains scope and coordinates dependencies |
-| **Backend Agent** | Product modeling, CMS adapter, authentication, authorization, server rendering, and business-rule tests | Owns security-sensitive decisions and sanitized data contracts |
-| **Frontend Agent** | Catalog presentation, responsive UI, filters, product drawer, and interaction design | Consumes approved product contracts without making authorization decisions |
-| **Review Agent** | Independent requirements review, security inspection, regression analysis, and verification | Reports findings with evidence and actionable recommendations |
 
+|---|---|---|
+
+| ****Orchestrator**** | Task decomposition, sequencing, shared context, handoffs, and acceptance criteria | Maintains scope and coordinates dependencies |
+
+| ****Backend Agent**** | Product modeling, CMS adapter, authentication, authorization, server rendering, and business-rule tests | Owns security-sensitive decisions and sanitized data contracts |
+
+| ****Frontend Agent**** | Catalog presentation, responsive UI, filters, product drawer, and interaction design | Consumes approved product contracts without making authorization decisions |
+
+| ****Review Agent**** | Independent requirements review, security inspection, regression analysis, and verification | Reports findings with evidence and actionable recommendations |
 
 ### Instruction hierarchy
 
@@ -109,7 +116,7 @@ This hierarchy reduces ambiguity, prevents agents from redefining shared interfa
 
 Tasks were designed around a repeatable workflow:
 
-1\. Establish the relevant requirements, existing implementation, and constraints.
+1. Establish the relevant requirements, existing implementation, and constraints.
 
 2\. Define a bounded objective, owned files, dependencies, and acceptance criteria.
 
@@ -139,7 +146,7 @@ An independently invoked Frontend Agent addressed an initial Next.js and ESLint 
 
 A later configuration regression was identified and corrected manually.
 
-**Engineering lesson:** Tool-generated configuration changes still require compatibility checks against the actual framework version.
+****Engineering lesson:**** Tool-generated configuration changes still require compatibility checks against the actual framework version.
 
 ### Product modeling and CMS integration
 
@@ -148,6 +155,20 @@ The Backend Agent was assigned the product schema, mocked CMS adapter, role-base
 An independent Review Agent inspected the implementation and reran verification. The recovered phase records successful lint, TypeScript, build, and 28 product tests.
 
 The important architectural result was a stable contract between raw CMS content and the data permitted to reach the browser.
+
+### Contentful integration — October 16, 2026
+
+After establishing the mock-backed architecture, I integrated Contentful as an optional live CMS source rather than replacing the deterministic test fixture. I configured a Product content model with name, slug, description, category, media, JSON specifications, access level, and separate public/authenticated prices stored as integer cents.
+
+The server-only Contentful adapter uses the Content Delivery API, handles pagination and linked media assets, and applies a 60-second Next.js cache revalidation interval. The `CMS_SOURCE` environment variable selects `mock` or `contentful`; both sources pass through the same normalization, filtering, visibility, and price-projection rules. A reusable Contentful Management API script imported and published all 12 products. The management token is needed only for import operations, not for application runtime.
+
+Local verification confirmed eight public products, all twelve products after login, published content updates after revalidation, and a Contentful-hosted image for Relay R1 Handheld. These checks do not establish that the new Contentful configuration has been deployed and regression-tested in production.
+
+### Shared ProductVisual extraction — October 19, 2026
+
+Following the image integration, the Frontend Agent extracted repeated product-image and placeholder markup into `ProductVisual`, a presentation-only component with `card`, `details`, and `featured` variants. `ProductCard`, `ProductDetails`, and homepage featured products now share image rendering and category-specific icon fallbacks. The refactor preserved overlays, sizing, hover effects, and accessibility attributes without changing pricing, authorization, drawer state, or CMS data contracts.
+
+Independent source review and orchestrator comparison found no blocking issues. ESLint and TypeScript checks passed at that point; production build, automated tests, and post-refactor browser checks were not reported as completed.
 
 ### Authentication and authorization
 
@@ -171,7 +192,7 @@ A subsequent assessment audit verified lint, TypeScript, 40 Vitest tests, and a 
 
 That issue was subsequently corrected through a developer-applied change and verified with passing lint, TypeScript, and Playwright checks.
 
-**The objective was not maximum autonomy. It was reliable delivery through the appropriate combination of agent specialization, developer oversight, and verification.**
+****The objective was not maximum autonomy. It was reliable delivery through the appropriate combination of agent specialization, developer oversight, and verification.****
 
 ---
 
@@ -211,13 +232,13 @@ This is intentionally simulated authentication, not a production identity system
 
 ### Safe CMS data projection
 
-The mocked CMS retains the assessment-required fields:
+The mock source retains the assessment-required fields:
 
 - `priceLoggedOut`
 
 - `priceAuthenticated`
 
-The server-side adapter selects the appropriate price and returns a sanitized product representation containing a single `displayPrice`.
+Contentful stores corresponding `publicPrice` and `authenticatedPrice` fields in integer cents. Both sources are normalized to the shared internal contract; server-side business rules select the authorized price and return a sanitized product representation containing a single `displayPrice`.
 
 Restricted products are excluded before the data reaches client components.
 
@@ -283,7 +304,11 @@ The state-controlled drawer provides a focused product view without changing the
 
 Direct URLs render a standalone product page.
 
-The implementation includes keyboard dismissal, focus considerations, history-aware navigation, and invalid-product handling.
+The implementation includes keyboard dismissal, focus considerations, preservation of catalog navigation state, and invalid-product handling. The drawer itself does not modify the URL or browser history.
+
+### Product imagery and presentation
+
+Contentful-hosted images are supported through Next.js Image with an allowlisted Contentful image host. Missing images fall back to category-specific Lucide icons. A shared `ProductVisual` component keeps the card, drawer/standalone details, and homepage featured-product treatments consistent while retaining distinct layouts for each context.
 
 ### Responsive implementation
 
@@ -299,16 +324,21 @@ Verification was incorporated throughout development rather than deferred until 
 
 ### Automated coverage
 
-
 | Test layer | Coverage |
-|---|---|
-| **Product unit tests** | Product data integrity, role visibility, price selection, sanitized fields, filtering, lookup, and malformed data |
-| **Authentication unit tests** | Credential validation, signed sessions, tampered tokens, expiration, and malformed inputs |
-| **Authentication browser tests** | Login, logout, protected routes, session persistence, and cookie behavior |
-| **Catalog security browser tests** | Public/authenticated HTML, restricted content exclusion, sanitized pricing, and captured RSC responses |
-| **Catalog interaction tests** | Navigation, filtering, layouts, and user-facing behavior |
-| **Product drawer tests** | Opening without navigation, first-click regression, dismissal, focus/reopening, reduced motion, direct links, and invalid products |
 
+|---|---|
+
+| ****Product unit tests**** | Product data integrity, role visibility, price selection, sanitized fields, filtering, lookup, and malformed data |
+
+| ****Authentication unit tests**** | Credential validation, signed sessions, tampered tokens, expiration, and malformed inputs |
+
+| ****Authentication browser tests**** | Login, logout, protected routes, session persistence, and cookie behavior |
+
+| ****Catalog security browser tests**** | Public/authenticated HTML, restricted content exclusion, sanitized pricing, and captured RSC responses |
+
+| ****Catalog interaction tests**** | Navigation, filtering, layouts, and user-facing behavior |
+
+| ****Product drawer tests**** | Opening without navigation, first-click regression, dismissal, focus/reopening, reduced motion, direct links, and invalid products |
 
 ### Latest verification
 
@@ -316,19 +346,17 @@ The developer subsequently confirmed that lint, TypeScript checks, and the compl
 
 The final audit reported:
 
-- **ESLint:** Passed.
+- ****ESLint:**** Passed.
 
-- **TypeScript:** Passed.
+- ****TypeScript:**** Passed.
 
-- **Vitest:** 40 tests passed.
+- ****Vitest:**** 40 tests passed.
 
-- **Production build:** Passed.
+- ****Production build:**** Passed.
 
 An earlier audit reported an intermittent intercepted-route drawer failure. The implementation was subsequently replaced with a state-controlled drawer, and the developer confirmed passing Playwright tests, including repeated first-click regression checks.
 
 The developer also confirmed that lint, TypeScript, and Playwright checks passed after the later drawer and focus-management changes. Exact updated test counts were not supplied for this documentation revision.
-
-These results describe local verification. Production deployment and HTTPS smoke testing remain separate acceptance steps.
 
 ### Testing security-sensitive output
 
@@ -350,33 +378,41 @@ This distinction matters: a test failure caused by its capture mechanism should 
 
 Several implementation challenges required decisions beyond initial code generation.
 
-
 | Challenge | Resolution and lesson |
-|---|---|
-| **Framework/tooling compatibility** | Corrected an ESLint configuration mismatch with the installed Next.js version. Verified configuration rather than assuming generated dependencies were compatible. |
-| **Server-only module testing** | Introduced test-specific handling for server-only imports while preserving production boundaries. |
-| **Request-time session rendering** | Used Next.js request-time rendering mechanisms and Suspense where required for session-dependent content. |
-| **Client-side versus server-side pricing** | Kept price selection in the server adapter and exposed only the authorized display price to the UI. |
-| **Category sentinel handling** | Normalized the `all` category at the route boundary so the CMS adapter receives the intended unfiltered request. |
-| **Filter navigation experience** | Replaced disruptive form navigation with App Router transitions, pending feedback, and scroll preservation. |
-| **Browser Back/Forward synchronization** | Corrected stale search-field state by synchronizing the filter form with applied URL values. |
-| **RSC security test reliability** | Adjusted response capture timing without removing or weakening assertions. |
-| **Shared footer overflow** | Moved the full-width divider outside the constrained content container to avoid horizontal overflow. |
-| **Intercepted-route development behavior** | Investigated intermittent first-click navigation failures; replaced intercepted routing with a state-controlled drawer, retaining standalone product URLs. The exact underlying hydration/navigation trigger was not conclusively proven. |
 
-These corrections demonstrate an important part of my development approach: **evaluate generated code against observable behavior, isolate the underlying cause, and apply focused changes without compromising architecture or test coverage.**
+|---|---|
+
+| ****Framework/tooling compatibility**** | Corrected an ESLint configuration mismatch with the installed Next.js version. Verified configuration rather than assuming generated dependencies were compatible. |
+
+| ****Server-only module testing**** | Introduced test-specific handling for server-only imports while preserving production boundaries. |
+
+| ****Request-time session rendering**** | Used Next.js request-time rendering mechanisms and Suspense where required for session-dependent content. |
+
+| ****Client-side versus server-side pricing**** | Kept price selection in the server adapter and exposed only the authorized display price to the UI. |
+
+| ****Category sentinel handling**** | Normalized the `all` category at the route boundary so the CMS adapter receives the intended unfiltered request. |
+
+| ****Filter navigation experience**** | Replaced disruptive form navigation with App Router transitions, pending feedback, and scroll preservation. |
+
+| ****Browser Back/Forward synchronization**** | Corrected stale search-field state by synchronizing the filter form with applied URL values. |
+
+| ****RSC security test reliability**** | Adjusted response capture timing without removing or weakening assertions. |
+
+| ****Shared footer overflow**** | Moved the full-width divider outside the constrained content container to avoid horizontal overflow. |
+
+| ****Intercepted-route development behavior**** | Investigated intermittent first-click navigation failures; replaced intercepted routing with a state-controlled drawer, retaining standalone product URLs. The exact underlying hydration/navigation trigger was not conclusively proven. |
+
+These corrections demonstrate an important part of my development approach: ****evaluate generated code against observable behavior, isolate the underlying cause, and apply focused changes without compromising architecture or test coverage.****
 
 ---
 
 ## 9. Architectural Tradeoffs
 
-### Mocked CMS instead of Contentful integration
+### Mocked CMS and Contentful as interchangeable sources
 
-The assessment permits a mocked CMS JSON source.
+The assessment permits mocked CMS JSON. I initially used local JSON to keep development deterministic and tests independent of external services. I subsequently added a live Contentful adapter behind `CMS_SOURCE`, preserving the mock option for local development and regression testing.
 
-I chose a small adapter over a live CMS integration to keep the application deterministic, independently testable, and focused on the required business logic.
-
-The adapter creates a clear integration point for Contentful or another provider in a future iteration.
+This introduces external API credentials, network availability, and cache staleness as operational concerns. A 60-second revalidation interval balances editorial updates against unnecessary API traffic. Contentful specifications remain a JSON field, which is compact but less editor-friendly than a separately modelled specification entry. The one-time import script can overwrite manual Contentful edits if rerun, so it should not be treated as a routine synchronization job.
 
 ### Simulated authentication instead of user infrastructure
 
@@ -398,6 +434,10 @@ At the developer's request, catalog React state replaced intercepted routes afte
 
 The drawer reuses already-authorized catalog data and CSS animations. It no longer changes the URL or history; standalone product URLs remain available. Interactions require hydration, and the first-click regression remains for local verification.
 
+### Shared ProductVisual component
+
+A presentation-only component now owns image rendering and fallback artwork for card, details, and featured variants. This reduces visual drift across surfaces without coupling CMS access or authorization to frontend rendering. Its variant-specific styles are an intentional tradeoff between reuse and explicit design control.
+
 ### Purposeful scope control
 
 I intentionally avoided unrelated features such as shopping carts, payments, user registration, databases, and custom agent infrastructure.
@@ -408,19 +448,17 @@ This kept engineering effort focused on the assessment's core requirements and m
 
 ## 10. What I Would Improve With Two Additional Weeks
 
-### Week 1 — Contentful Integration
+### Week 1 — CMS Resilience and Editorial Experience
 
-My first priority would be replacing the mocked JSON with a real Contentful integration.
+With Contentful already integrated, my first priority would be hardening the live CMS workflow. I would:
 
-I would:
+- Add tests for the Contentful adapter, including missing or invalid product data.
+- Improve error handling when Contentful is unavailable.
+- Add clearer loading and error messages for users.
+- Improve product image fallbacks when images are missing.
+- Verify that published Contentful changes appear correctly in production.
 
-- Create a Contentful space and define a Product content model.
-- Move the existing 12 products into Contentful.
-- Update the CMS adapter to fetch products from Contentful.
-- Use Contentful's media library to manage product images.
-- Keep product visibility and pricing decisions on the server.
-
-This would allow product information, pricing, and images to be managed without changing the application code.
+These improvements would make the CMS integration more resilient and maintainable without changing the server-side authorization boundary.
 
 ### Week 2 — Authentication and User Experience
 
@@ -429,11 +467,16 @@ The second week would focus on making the application more suitable for real use
 I would:
 
 - Replace simulated login with real user authentication.
+
 - Introduce customer and partner accounts with different access permissions.
+
 - Add secure password handling and proper session management.
-- Improve loading and error states when Contentful data is unavailable.
+
+- Improve user-facing loading and error states for upstream CMS failures.
+
 - Refine mobile responsiveness and product drawer interactions.
-- Expand automated tests for Contentful integration and authentication.
+
+- Expand automated tests for real authentication, roles, and failure recovery.
 
 These improvements would make SIGNAL more practical as a real product catalog while building on the existing Next.js architecture.
 
@@ -443,15 +486,15 @@ These improvements would make SIGNAL more practical as a real product catalog wh
 
 This assessment reinforced three principles that shape how I use AI in software development.
 
-**1. Architecture must precede generation.**
+****1. Architecture must precede generation.****
 
 Clear data contracts, ownership boundaries, and security constraints make AI-generated implementations more reliable and easier to integrate.
 
-**2. Effective orchestration requires judgment, not just delegation.**
+****2. Effective orchestration requires judgment, not just delegation.****
 
 Specialized agents are valuable when their tasks are bounded, their context is explicit, and their output is independently verifiable. Direct developer intervention remains essential when requirements change or integration issues arise.
 
-**3. Verification is part of implementation.**
+****3. Verification is part of implementation.****
 
 A visually complete application is not necessarily a correct application. Testing server-rendered output, session behavior, navigation, and data exposure revealed issues that could not be established through visual inspection alone.
 
@@ -459,16 +502,16 @@ A visually complete application is not necessarily a correct application. Testin
 
 SIGNAL demonstrates my ability to combine full-stack engineering with structured AI-assisted development.
 
-I defined the architecture, established agent responsibilities, maintained the security boundaries, guided implementation, resolved defects, and validated the application through automated testing.
+I defined the architecture, established agent responsibilities, maintained the security boundaries, guided implementation, resolved defects, and validated the original application through automated testing. The later Contentful integration and visual refactor extend that work, with final regression and deployment checks still to be completed.
 
 The resulting system is intentionally scoped, technically cohesive, and supported by documented development decisions.
 
-**For me, the value of a multi-agent workflow is not how much code can be generated autonomously. It is how effectively specialized AI capabilities can be directed, integrated, and verified to deliver reliable software.**
+****For me, the value of a multi-agent workflow is not how much code can be generated autonomously. It is how effectively specialized AI capabilities can be directed, integrated, and verified to deliver reliable software.****
 
 ---
 
-**Project: SIGNAL — Motorola Solutions Full Stack Web Developer Technical Assessment**
+****Project: SIGNAL — Motorola Solutions Full Stack Web Developer Technical Assessment****
 
-**Developer: Joao Felipe Silveira**
+****Developer: Joao Felipe Silveira****
 
-**GitHub: https://github.com/accessjoao**
+****GitHub: https://github.com/accessjoao****

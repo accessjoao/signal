@@ -35,6 +35,27 @@ function isPrice(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
+function isValidImage(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+
+  // Existing local image paths
+  if (/^\/(?!\/)[^\s\\?#]+$/.test(value)) {
+    return true;
+  }
+
+  // Only allow Contentful-hosted remote images
+  try {
+    const url = new URL(value);
+
+    return (
+      url.protocol === "https:" &&
+      url.hostname === "images.ctfassets.net"
+    );
+  } catch {
+    return false;
+  }
+}
+
 /** Invalid required content is omitted; absent optional media/specs are normalized. */
 export function normalizeProducts(content: unknown): CmsProduct[] {
   if (!Array.isArray(content)) return [];
@@ -74,10 +95,7 @@ export function normalizeProducts(content: unknown): CmsProduct[] {
       name: entry.name.trim(),
       description: entry.description.trim(),
       category: entry.category as ProductCategory,
-      // Only local asset paths are supported by this mock CMS.
-      image: typeof entry.image === "string" && /^\/(?!\/)[^\s\\?#]+$/.test(entry.image)
-        ? entry.image
-        : null,
+      image: isValidImage(entry.image) ? entry.image : null,
       specifications,
       priceLoggedOut: entry.priceLoggedOut,
       priceAuthenticated: entry.priceAuthenticated,

@@ -1,13 +1,9 @@
-
-import Image from "next/image";
 import {
     LockKeyhole,
-    Network,
-    Radio,
     ShieldCheck,
-    Video,
 } from "lucide-react";
 
+import ProductVisual from "@/components/catalog/product-visual";
 import type { Product } from "@/types/product";
 
 type ProductDetailsProps = {
@@ -21,13 +17,6 @@ const priceFormatter = new Intl.NumberFormat("en-US", {
     currency: "USD",
 });
 
-// Static icon references prevent components from being created during render.
-const categoryIcons = {
-    "Communication Devices": Radio,
-    "Video & Monitoring": Video,
-    "Network & Infrastructure": Network,
-} as const;
-
 export default function ProductDetails({
     product,
     isAuthenticated,
@@ -35,59 +24,9 @@ export default function ProductDetails({
 }: ProductDetailsProps) {
     const price = priceFormatter.format(product.displayPrice / 100);
 
-    const CategoryIcon =
-        categoryIcons[
-        product.category as keyof typeof categoryIcons
-        ] ?? Radio;
-
     return (
         <div className="flex flex-col gap-9 text-[#F3F4F2]">
-            {/* Product visual */}
-            <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#303538]">
-                {product.image ? (
-                    <div className="relative h-full w-full">
-                        <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 800px"
-                            className="object-cover"
-                        />
-                    </div>
-                ) : (
-                    <>
-                        <div
-                            aria-hidden="true"
-                            className="absolute h-[75%] aspect-square rounded-full border border-white/[0.07]"
-                        />
-
-                        <div
-                            aria-hidden="true"
-                            className="absolute h-[52%] aspect-square rounded-full border border-[#D9F36A]/15"
-                        />
-
-                        <div
-                            aria-hidden="true"
-                            className="absolute h-32 w-32 rounded-full bg-[#D9F36A]/[0.04] blur-3xl"
-                        />
-
-                        <CategoryIcon
-                            size={88}
-                            strokeWidth={0.8}
-                            aria-hidden="true"
-                            className="relative text-[#D9F36A]/65"
-                        />
-
-                        <span className="absolute bottom-5 left-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">
-                            SIGNAL / Product visual
-                        </span>
-                    </>
-                )}
-
-                <span className="absolute left-5 top-5 rounded-full border border-white/15 bg-[#171A1D]/75 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 backdrop-blur-sm">
-                    {product.category}
-                </span>
-            </div>
+            <ProductVisual product={product} variant="details" />
 
             {/* Product information */}
             <div>

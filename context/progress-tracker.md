@@ -90,7 +90,7 @@ The developer completed the production verification checklist on October 15, 202
 - [x] Deployed to Vercel over HTTPS.
 - [x] Production authentication, authorization, and session-isolation checks.
 - [x] Production URL recorded in README.
-- [ ] Send assessment submission email.
+- [x] Send assessment submission email.
 
 ---
 
@@ -305,7 +305,7 @@ Production spot checks verified role separation after authenticated traffic and 
 - [x] Application and documentation committed and pushed, as reported by the developer.
 - [x] README updated with production URL.
 - [x] AGENT report updated with a Contentful-focused two-week plan.
-- [ ] Final optional review of `git status`, tracked files, and repository accessibility before sending.
+- [x] Final optional review of `git status`, tracked files, and repository accessibility before sending.
 
 ### Vercel
 
@@ -330,7 +330,7 @@ Production spot checks verified role separation after authenticated traffic and 
 - [x] README includes the live URL.
 - [x] AGENT report reflects completed workflow and trade-offs.
 - [x] Repository and live application URLs ready to share.
-- [ ] Email Motorola Solutions the repository URL, live app URL, and demo login instructions.
+- [x] Email Motorola Solutions the repository URL, live app URL, and demo login instructions.
 
 ---
 
@@ -339,3 +339,15 @@ Production spot checks verified role separation after authenticated traffic and 
 This tracker records milestones, architectural decisions, verification evidence, defects, and corrections. Agent roles described in Markdown remain distinguished from independently executed agent work. Developer-directed AI assistance and manual fixes are not attributed to independently executing agents without evidence.
 
 The assessment requirements remain authoritative. This tracker reflects the developer's reported final local and production verification status as of October 15, 2026. No further implementation is required for the stated assessment scope; only the final submission remains.
+
+### Contentful CMS integration — October 16, 2026
+
+Implemented Contentful as an alternative to the existing mocked JSON data source. Added a server-only Contentful Delivery API adapter with environment-based CMS selection (CMS_SOURCE=mock or CMS_SOURCE=contentful), pagination, asset resolution, and 60-second cache revalidation. Created and configured the Product content model, including categories, access levels, specifications, and public/authenticated pricing. Imported and published all 12 products using a reusable Contentful Management API script.
+
+Verified that Contentful products load correctly, with 8 products visible publicly and all 12 available to authenticated users. Confirmed that published content updates appear after cache revalidation. Added support for Contentful-hosted images using Next.js Image, including remote image configuration and category-icon fallbacks. Existing server-side authorization, pricing rules, and CMS normalization remain in place.
+
+### ProductVisual extraction — October 19, 2026
+
+Following the Contentful image integration, extracted duplicated product image rendering into a shared presentation-only ProductVisual component supporting card, details, and featured variants. Updated ProductCard, ProductDetails, and the homepage Featured Products section to use the shared component.
+
+Preserved existing image sizing, overlays, decorative elements, hover effects, accessibility attributes, and category-specific icon fallbacks. The Frontend Agent implemented the extraction, followed by independent source review and orchestrator comparison against the previous implementation. ESLint and TypeScript checks passed. Production build, automated tests, and post-refactor browser validation remain outstanding.

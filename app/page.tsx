@@ -8,6 +8,7 @@ import {
   LockKeyhole,
 } from "lucide-react";
 
+import ProductVisual from "@/components/catalog/product-visual";
 import { getProducts } from "@/lib/cms/products";
 
 const categories = [
@@ -266,20 +267,13 @@ export default async function Home() {
                 href={`/catalog/${product.slug}`}
                 className="group overflow-hidden rounded-2xl border border-white/10 bg-[#383D40] transition hover:border-[#D9F36A]/50"
               >
-                <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[#303538]">
-                  <div className="absolute h-44 w-44 rounded-full border border-white/10" />
-                  <div className="absolute h-28 w-28 rounded-full border border-[#D9F36A]/20" />
-                  <Radio
-                    size={64}
-                    strokeWidth={0.9}
-                    className="relative text-[#D9F36A]/55 transition-transform duration-500 group-hover:scale-110"
-                  />
+                <ProductVisual
+                  product={product}
+                  variant="featured"
+                  featuredLabel={`0${index + 1}`}
+                />
 
-                  <span className="absolute left-6 top-6 text-xs text-white/35">
-                    0{index + 1}
-                  </span>
-                </div>
-
+                {/* Product information */}
                 <div className="p-7">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#D9F36A]">
                     {product.category}
@@ -297,6 +291,7 @@ export default async function Home() {
                     <span className="text-lg font-semibold">
                       {formatPrice(product.displayPrice)}
                     </span>
+
                     <ArrowUpRight
                       size={21}
                       className="text-[#D9F36A] transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"

@@ -1,6 +1,6 @@
 # SIGNAL
 
-**A full-stack enterprise technology catalog built with Next.js and a Markdown-driven multi-agent development workflow.**
+**A full-stack enterprise technology catalog built with Next.js, Contentful, and a Markdown-driven multi-agent development workflow.**
 
 SIGNAL is a fictional enterprise technology platform developed for the [Motorola Solutions Full Stack Web Developer Technical Assessment](context/assessment-requirements.md).
 
@@ -12,23 +12,28 @@ Beyond the finished catalog, the assessment focuses on **AI-assisted engineering
 
 <img width="1268" height="770" alt="Signal-app" src="https://github.com/user-attachments/assets/61b885dd-fe95-4999-8c06-9a18691aa431" />
 
-
 ## Live Demo
 
 **Production:** https://signal-seven-omega.vercel.app/
 
 **Deployment:** Vercel
 
-**Production verification:** Completed successfully.
+**Production verification:** Original mock-backed deployment passed all 11 checks; Contentful-backed production verification is pending.
 
-All 11 production verification checks passed, including:
+The original deployment passed 11 production verification checks, including:
 
 - HTTPS availability
+
 - Authentication and secure session cookies
+
 - Server-side product authorization and role-based pricing
+
 - Public and authenticated session isolation
+
 - Catalog search and category filtering
+
 - Product drawer and direct product URLs
+
 - Logout and protected route enforcement
 
 **Development report:** [AGENT.md](AGENT.md)
@@ -53,7 +58,7 @@ All 11 production verification checks passed, including:
 
 ### Product catalog
 
-- 12 fictional enterprise technology products across three categories.
+- 12 fictional enterprise technology products across three categories, imported and published in Contentful.
 
 - Eight publicly available products (Set A).
 
@@ -72,6 +77,8 @@ All 11 production verification checks passed, including:
 - Product details presented through a state-controlled drawer or standalone page.
 
 - Loading, empty-results, missing-image, and not-found states.
+
+- Contentful-hosted images with category-specific icon fallbacks in featured products, catalog cards, drawers, and standalone product pages.
 
 ### User experience
 
@@ -93,24 +100,33 @@ All 11 production verification checks passed, including:
 
 ---
 
-
 ## Technology Stack
 
 | Layer | Technology |
+
 |---|---|
+
 | Framework | Next.js 16.4.0, App Router |
+
 | UI | React 19.3.0, TypeScript |
+
 | Styling | Tailwind CSS 4 |
-| Content | Mocked CMS JSON with server-only adapter |
+
+| Content | Contentful Delivery API or mocked CMS JSON via server-only adapter |
+
 | Authentication | Next.js Server Actions, Node.js crypto, signed cookies |
-| UI components | Radix Select, Lucide React |
+
+| UI components | Radix Select, Lucide React, shared `ProductVisual` variants |
+
 | Animation | CSS transitions and keyframes |
+
 | Unit testing | Vitest |
+
 | End-to-end testing | Playwright, Chromium |
+
 | Deployment | Vercel |
 
 The project uses Next.js Server Components for data retrieval, authentication-dependent rendering, and product authorization. Client Components are limited to interactive presentation behavior.
-
 
 ---
 
@@ -134,7 +150,7 @@ cd signal
 
 ```
 
-The repository URL above assumes the project will be published as `accessjoao/signal`. Update it if the final repository name differs.
+
 
 ### 2. Install dependencies
 
@@ -149,24 +165,31 @@ npm ci
 Create a `.env.local` file in the project root:
 
 ```env
-
 SESSION_SECRET=replace-with-your-own-random-secret-at-least-32-characters
 
+# Choose mock or contentful. Defaults to mock if omitted.
+CMS_SOURCE=mock
+
+# Required only when CMS_SOURCE=contentful
+CONTENTFUL_SPACE_ID=your_space_id
+CONTENTFUL_DELIVERY_TOKEN=your_content_delivery_api_token
+CONTENTFUL_ENVIRONMENT=master
+
+# Optional: local import script only; never needed by the running application
+# CONTENTFUL_MANAGEMENT_TOKEN=your_management_api_token
 ```
 
-`SESSION_SECRET` is required for signing and validating session tokens.
-
-Use a cryptographically random value of at least 32 characters. Keep it server-side and use different values for local development and deployment.
-
-For example, generate a secret with Node.js:
+`SESSION_SECRET` is required to sign and validate session tokens. Generate a cryptographically random value (at least 32 characters), and use a different value for each environment:
 
 ```bash
-
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
-
 ```
 
-No database, CMS API key, or external authentication provider is required.
+The application runs without Contentful credentials when `CMS_SOURCE=mock`. Set `CMS_SOURCE=contentful` and provide the Content Delivery API credentials to load published Contentful products. Keep tokens server-side and never commit `.env.local`.
+
+The Contentful Management API token is used only by the local import script; do not configure it in Vercel.
+
+---
 
 ### 4. Start the development server
 
@@ -200,15 +223,20 @@ On Windows PowerShell, use `npm.cmd` or `npx.cmd` if execution policy blocks the
 
 ---
 
-
 ## Application Routes
 
 | Route | Description | Access |
+
 |---|---|---|
+
 | `/` | Marketing homepage and featured products | Public |
+
 | `/catalog` | Searchable product catalog with role-based pricing | Public / authenticated |
+
 | `/catalog/[slug]` | Standalone product details for direct URLs | Based on product visibility |
+
 | `/login` | Simulated authentication | Public |
+
 | `/partner` | Partner landing page | Authenticated only |
 
 The homepage deliberately displays public featured-product pricing, even for authenticated visitors.
@@ -224,9 +252,13 @@ SIGNAL is built with Next.js App Router, TypeScript, and Tailwind CSS.
 The application separates server-side logic from frontend interactions:
 
 - **Server Components:** Fetch products, check authentication, and select the correct pricing.
-- **CMS Adapter:** Reads product data from mocked JSON and prepares it for the frontend. It can later be connected to Contentful.
+
+- **CMS Adapter:** Selects Contentful or mocked JSON, normalizes product data, and applies server-side visibility and pricing rules.
+
 - **Authentication:** Uses signed session cookies to protect partner routes and restricted products.
+
 - **Client Components:** Handle search controls, display layouts, and the product drawer.
+
 - **Testing:** Uses Vitest for unit tests and Playwright for browser testing.
 
 Product visibility and pricing are determined on the server before data is sent to the frontend.
@@ -235,6 +267,53 @@ For details about the multi-agent development architecture, prompting strategy, 
 
 ---
 
+## Contentful CMS Integration
+
+SIGNAL supports two interchangeable product data sources, selected server-side through `CMS_SOURCE`:
+
+| Source | Configuration | Purpose |
+|---|---|---|
+| Mock JSON | `CMS_SOURCE=mock` | Deterministic local development and baseline tests; default |
+| Contentful | `CMS_SOURCE=contentful` | Published, editor-managed products and images |
+
+The Contentful adapter lives in `lib/cms/contentful.ts`. It requests published Product entries from the Content Delivery API, handles pagination and linked media assets, and uses Next.js cache revalidation (60 seconds). `lib/cms/products.ts` selects the source and passes records through the existing normalization and server-side authorization rules. The frontend receives only authorized products and a single `displayPrice`.
+
+### Content model
+
+The Contentful `product` content type uses these fields:
+
+| Field | Type / representation |
+|---|---|
+| `name`, `slug`, `category`, `accessLevel` | Short text; `accessLevel` is `public` or `authenticated` |
+| `description` | Long text |
+| `image` | Linked media asset (optional) |
+| `specifications` | JSON array of `{ "label": "...", "value": "..." }` |
+| `publicPrice`, `authenticatedPrice` | Integer prices in USD cents |
+
+All 12 fictional products were imported and published. A local script, `scripts/import-contentful.mjs`, uses the Contentful Management API for initial or repeat imports. **It can overwrite manually edited entries when rerun**, so treat it as a controlled seed/import operation rather than a routine synchronization job.
+
+The Management API token is only needed for that script. The deployed application requires only the read-only Delivery API token.
+
+### Images and content updates
+
+Contentful image assets are served from `images.ctfassets.net`, which is allowed in `next.config.ts`. The reusable `components/catalog/product-visual.tsx` renders images through Next.js `Image` and preserves category-specific placeholders for missing images in the homepage, catalog, drawer, and standalone details.
+
+Local checks confirmed 8 public products, 12 authenticated products, and published description updates appearing after cache revalidation. Product image rendering was also manually confirmed before the shared visual refactor. Complete post-refactor automated verification and Contentful-backed production smoke tests remain outstanding.
+
+### Deploying with Contentful
+
+Set the following in **Vercel → Project → Settings → Environment Variables**, then redeploy:
+
+```env
+CMS_SOURCE=contentful
+CONTENTFUL_SPACE_ID=your_space_id
+CONTENTFUL_DELIVERY_TOKEN=your_content_delivery_api_token
+CONTENTFUL_ENVIRONMENT=master
+```
+
+Also configure `SESSION_SECRET` separately. **Do not deploy `CONTENTFUL_MANAGEMENT_TOKEN`.** Confirm public/partner visibility, pricing, images, and a published content update after deployment.
+
+---
 
 ## Authentication and Security
 
@@ -249,9 +328,13 @@ After login, the server creates a signed session cookie and redirects the user t
 The application uses:
 
 - Signed session cookies to prevent tampering.
+
 - HttpOnly cookies to prevent JavaScript access.
+
 - Secure cookies in production over HTTPS.
+
 - Seven-day session expiration.
+
 - Server-side checks to protect routes and restricted products.
 
 Logging out removes the session cookie.
@@ -260,14 +343,15 @@ This authentication system was designed for the assessment. A production applica
 
 ### Role-based content and pricing
 
-The mocked CMS contains two product sets and two price fields per product.
-
+Both supported CMS sources represent two product sets and two price fields per product. Contentful stores these as `publicPrice` and `authenticatedPrice` (integer cents), mapped by the adapter to `priceLoggedOut` and `priceAuthenticated`.
 
 | Visitor | Visible products | Price selected |
-|---|---|---|
-| Public | Set A — 8 products | `priceLoggedOut` |
-| Authenticated | Sets A + B — 12 products | `priceAuthenticated` |
 
+|---|---|---|
+
+| Public | Set A — 8 products | `priceLoggedOut` |
+
+| Authenticated | Sets A + B — 12 products | `priceAuthenticated` |
 
 Both raw price fields remain in the CMS model.
 
@@ -349,14 +433,17 @@ The assessment required the application to be developed through specialized AI a
 
 SIGNAL implements this structure through four roles:
 
-
 | Agent | Responsibility |
-|---|---|
-| **Orchestrator** | Task planning, context selection, delegation, handoffs, and acceptance |
-| **Backend Agent** | CMS data, product contracts, authentication, authorization, and server-side business rules |
-| **Frontend Agent** | Responsive UI, catalog interactions, product details, and accessibility |
-| **Review Agent** | Independent verification, security inspection, testing, and regression analysis |
 
+|---|---|
+
+| **Orchestrator** | Task planning, context selection, delegation, handoffs, and acceptance |
+
+| **Backend Agent** | CMS data, product contracts, authentication, authorization, and server-side business rules |
+
+| **Frontend Agent** | Responsive UI, catalog interactions, product details, and accessibility |
+
+| **Review Agent** | Independent verification, security inspection, testing, and regression analysis |
 
 ### Shared context
 
@@ -395,12 +482,16 @@ SIGNAL includes automated tests covering product business rules, authentication,
 ### Static Analysis and Unit Tests
 
 ```bash
+
 npm run lint
+
 npx tsc --noEmit
+
 npx vitest run
+
 ```
 
-The unit test suite contains **40 tests**, covering product logic and authentication.
+A previous verified run passed **40 unit tests**, covering product logic and authentication. The suite should be rerun after the Contentful and ProductVisual changes.
 
 Product tests verify visibility, pricing, filtering, data projection, lookup, and invalid data handling.
 
@@ -411,7 +502,9 @@ Authentication tests verify input validation, token integrity, malformed session
 Install Playwright Chromium:
 
 ```bash
+
 npx playwright install chromium
+
 ```
 
 **Important:** Before running Playwright, make sure the local Next.js development server is stopped. If `npm run dev` is running in another terminal, press `Ctrl + C` to stop it.
@@ -421,18 +514,20 @@ Playwright starts its own web server using the configuration in `playwright.conf
 Run the browser suite:
 
 ```bash
+
 npx playwright test
+
 ```
 
-The Playwright suite covers authentication, protected routes, session behavior, product visibility, server-rendered data, React Server Components responses, and product navigation.
+The Playwright suite covers authentication, protected routes, session behavior, product visibility, server-rendered data, React Server Components responses, and product navigation. Run baseline tests with `CMS_SOURCE=mock`; separately smoke-test Contentful using valid credentials. Do not assume the existing test suite exercises the live Contentful API.
 
 Security-oriented browser tests inspect actual server responses rather than relying exclusively on visible UI state.
 
 ---
 
-### Production verification checklist
+### Original deployment verification checklist
 
-After deployment, verify:
+The following checks passed for the original mock-backed production deployment (before the Contentful integration):
 
 - [x] Homepage and catalog load over HTTPS.
 
@@ -456,42 +551,46 @@ After deployment, verify:
 
 - [x] Public requests remain correctly authorized after authenticated traffic.
 
-The verified production URL: https://signal-seven-omega.vercel.app/
+Production URL: https://signal-seven-omega.vercel.app/
+
+**Pending:** Redeploy with Contentful environment variables and repeat production smoke tests for the new CMS source and shared product visuals.
 
 ---
 
 ## Design and Implementation Tradeoffs
 
-**Mocked CMS:** Used local JSON instead of Contentful to keep development and testing simple. The existing adapter can be updated to fetch data from Contentful later.
+**CMS flexibility:** The project began with deterministic mock JSON to establish testable business rules. Contentful was subsequently integrated through the same server-only adapter boundary, keeping normalization, visibility, and price selection independent of the source.
 
-**Simulated authentication:** Used signed session cookies instead of building a full authentication system with user accounts and a database.
+**Contentful caching:** The Delivery API uses a 60-second revalidation interval. This reduces requests but means newly published edits may not appear immediately.
 
-**Server-side pricing:** Product visibility and pricing are handled on the server to prevent restricted information from reaching public users.
+**Content modelling:** Specifications are currently stored as JSON for a compact assessment implementation. A production editorial workflow could use a separate Specification content type with references or a custom field editor to make individual specifications easier for nontechnical users to manage.
 
-**Product drawer:** Product details open in a drawer without changing the URL. Direct product links still work as standalone pages.
+**Simulated authentication:** Signed session cookies meet the assessment scope without a user database; real identity verification, revocation, and account management are not implemented.
 
-**Product images:** Used category-specific icons and placeholders instead of real product images.
+**Server-side pricing:** The server selects the authorized price and filters restricted products before returning presentation data.
 
-**Error handling:** Invalid products display a not-found page, although Next.js streaming may sometimes return an HTTP 200 status.
+**Product drawer:** Details open in a state-controlled drawer without changing the URL; direct product URLs remain standalone pages.
 
-**Project scope:** Focused on the assessment requirements rather than adding unnecessary features such as shopping carts, databases, or user registration.
+**Product images:** Contentful images use Next.js `Image`; missing images fall back to category-specific icons through a reusable three-variant `ProductVisual` component.
+
+**Error handling:** Invalid products display a not-found page, although Next.js streaming may sometimes return an HTTP 200 status. Contentful outage-specific error handling could be improved.
+
+**Project scope:** No shopping cart, payment processing, account database, or custom agent orchestration service was added.
 
 ---
 
-
 ## Future Improvements
 
-With additional development time, I would focus on:
+With additional development time, priorities would include:
 
-- **Contentful integration:** Replace the mocked JSON with a real Contentful space to manage products and categories.
-- **Content management:** Create a Product content model so product details, specifications, pricing, and visibility can be updated without changing the code.
-- **Product images:** Use Contentful's media library to upload and manage real product images.
-- **Real authentication:** Replace the simulated login with a proper authentication system that supports registered users, secure password handling, and account management.
-- **User roles:** Introduce real customer and partner accounts with appropriate access permissions and pricing.
-- **Testing:** Expand automated tests to cover Contentful integration, real authentication, and different user roles.
-- **User experience:** Continue improving mobile responsiveness, accessibility, and loading states.
+- **Authentication:** Replace simulated login with real user identities, secure credential validation, and session lifecycle management.
+- **Editorial experience:** Replace raw specifications JSON with editor-friendly linked entries or a custom Contentful field editor.
+- **CMS resilience:** Add explicit handling and monitoring for Contentful API failures, rate limits, and invalid content.
+- **Testing:** Add mocked Contentful adapter tests and a controlled integration smoke test, while preserving deterministic mock-backed E2E tests.
+- **Content operations:** Define a safe editorial/import workflow and avoid overwriting published manual edits during repeat imports.
+- **User experience:** Continue refining accessibility, loading/error states, and responsive behavior.
 
-See [AGENT.md](AGENT.md) for the detailed two-week improvement plan.
+See [AGENT.md](AGENT.md) for the development report and original improvement plan; update that report to reflect the completed Contentful work.
 
 ---
 
