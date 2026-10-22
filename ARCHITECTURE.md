@@ -160,13 +160,3 @@ Test and deployment status should be confirmed against the latest run; a passing
 2. **CMS abstraction:** The UI uses a stable product contract whether the source is Contentful or mock JSON.
 3. **Shared presentation components:** Product visuals are reused across catalog cards, product details, and featured content.
 4. **Documented agent workflow:** Specialized responsibilities, shared context, and independent review make AI-assisted changes easier to coordinate and audit.
-
-## 8. Suggested walkthrough (8–10 minutes)
-
-1. **Architecture (2 min):** Explain the application diagram and server/CMS boundary.
-2. **Agent workflow (2 min):** Show the agent diagram and one example of planning → implementation → review.
-3. **Live demo (3 min):** Browse products, filter, open details, sign in, and show authenticated catalog differences.
-4. **Technical highlights (2 min):** Open `lib/cms/products.ts` and briefly explain testing and tradeoffs.
-5. **Close (1 min):** Emphasize architecture ownership and verification.
-
-**Demo framing:** The focus is not how many files AI generated; it is how the engineering process constrained, integrated, and verified those changes.
