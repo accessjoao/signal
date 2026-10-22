@@ -12,6 +12,8 @@ export interface ProductSpecification {
   value: string;
 }
 
+export type ProductSort = "default" | "price-asc" | "price-desc";
+
 /** Safe for serialization to presentation components after server authorization. */
 export interface Product {
   id: string;
@@ -31,4 +33,5 @@ export interface ProductFilters {
   category?: string;
   /** Case-insensitive substring in name or description; whitespace is trimmed. */
   search?: string;
+  sort?: ProductSort
 }

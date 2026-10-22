@@ -13,6 +13,7 @@ import {
   findProductBySlug,
   normalizeProducts,
   searchProducts,
+  sortProducts,
   toDisplayProduct,
 } from "../products/product-rules";
 
@@ -50,10 +51,12 @@ export async function getProducts(
     return authorized ? [authorized] : [];
   });
 
-  return searchProducts(
+  const filteredProducts = searchProducts(
     filterByCategory(visibleProducts, filters.category),
     filters.search,
   );
+
+  return sortProducts(filteredProducts, filters.sort);
 }
 
 export async function getProductBySlug(
