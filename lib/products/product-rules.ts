@@ -6,6 +6,7 @@ import {
   type Product,
   type ProductCategory,
   type ProductSpecification,
+  type ProductSort,
 } from "../../types/product";
 
 /** Raw CMS contract. Never pass this model to presentation components. */
@@ -149,4 +150,21 @@ export function searchProducts(products: readonly Product[], search = ""): Produ
   return products.filter((product) =>
     product.name.toLowerCase().includes(query) || product.description.toLowerCase().includes(query),
   );
+}
+
+export function sortProducts(
+  products: readonly Product[],
+  sort: ProductSort = "default",
+): Product[] {
+  const sorted = [...products];
+
+  if (sort === "price-asc") {
+    return sorted.sort((a, b) => a.displayPrice - b.displayPrice)
+  }
+
+  if (sort === "price-desc") {
+    return sorted.sort((a, b) => b.displayPrice - a.displayPrice)
+  }
+
+  return sorted;
 }

@@ -11,17 +11,20 @@ import {
 } from "lucide-react";
 
 import CategorySelect from "./category-select";
+import type { ProductSort } from "@/types/product";
 
 type CatalogFiltersProps = {
   categories: string[];
   selectedCategory: string;
   search: string;
+  sort: ProductSort;
 };
 
 export default function CatalogFilters({
   categories,
   selectedCategory,
   search,
+  sort,
 }: CatalogFiltersProps) {
   return (
     <CatalogFiltersForm
@@ -29,6 +32,7 @@ export default function CatalogFilters({
       categories={categories}
       selectedCategory={selectedCategory}
       search={search}
+      sort={sort}
     />
   );
 }
@@ -37,21 +41,29 @@ function CatalogFiltersForm({
   categories,
   selectedCategory,
   search,
+  sort,
 }: CatalogFiltersProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [searchValue, setSearchValue] = useState(search);
 
-  const hasActiveFilters = Boolean(selectedCategory || search);
+  const hasActiveFilters = Boolean(
+    selectedCategory || search || sort !== "default",
+  );
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const category = String(formData.get("category") ?? "");
+    const selectedSort = String(formData.get("sort") ?? "default");
     const searchTerm = searchValue.trim();
 
     const params = new URLSearchParams();
+
+    if (selectedSort === "price-asc" || selectedSort === "price-desc") {
+      params.set("sort", selectedSort);
+    }
 
     if (category && category !== "all") {
       params.set("category", category);
@@ -154,6 +166,27 @@ function CatalogFiltersForm({
             categories={categories}
             selectedCategory={selectedCategory}
           />
+        </div>
+
+        {/* Sort by price */}
+        <div className="lg:w-56">
+          <label
+            htmlFor="catalog-sort"
+            className="mb-2.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[#B9BEC0]"
+          >
+            Sort by
+          </label>
+
+          <select
+            id="catalog-sort"
+            name="sort"
+            defaultValue={sort}
+            className="min-h-13 w-full cursor-pointer rounded-xl border border-white/10 bg-[#292D30] px-4 py-3 text-sm text-white outline-none transition focus:border-[#D9F36A] focus:ring-2 focus:ring-[#D9F36A]/15"
+          >
+            <option value="default">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
         </div>
 
         {/* Submit */}

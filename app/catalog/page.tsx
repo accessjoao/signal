@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { ArrowRight, ArrowUpRight, LockKeyhole } from "lucide-react";
+import type { ProductSort } from "@/types/product";
 
 import CatalogFilters from "@/components/catalog/catalog-filters";
 import CatalogGrid from "@/components/catalog/catalog-grid";
@@ -12,6 +13,7 @@ type CatalogPageProps = {
   searchParams: Promise<{
     category?: string | string[];
     search?: string | string[];
+    sort?: string | string[];
   }>;
 };
 
@@ -35,6 +37,13 @@ async function CatalogContent({
 
   const search = getSingleValue(params.search);
 
+  const rawSort = getSingleValue(params.sort);
+
+  const sort: ProductSort =
+    rawSort === "price-asc" || rawSort === "price-desc"
+      ? rawSort
+      : "default";
+
   const access = await getAccessLevel();
   const isAuthenticated = access === "authenticated";
 
@@ -44,6 +53,7 @@ async function CatalogContent({
     getProducts(access, {
       category: selectedCategory,
       search,
+      sort,
     }),
     getCategories(),
   ]);
@@ -141,11 +151,10 @@ async function CatalogContent({
                   pathname: "/catalog",
                   query: { category },
                 }}
-                className={`rounded-full border px-4 py-2 text-xs font-medium transition ${
-                  selectedCategory === category
+                className={`rounded-full border px-4 py-2 text-xs font-medium transition ${selectedCategory === category
                     ? "border-[#D9F36A] bg-[#D9F36A] text-[#171A1D]"
                     : "border-white/15 text-white/60 hover:border-white/40 hover:text-white"
-                }`}
+                  }`}
               >
                 {category}
               </Link>
@@ -181,6 +190,7 @@ async function CatalogContent({
           categories={categories}
           selectedCategory={selectedCategory}
           search={search}
+          sort={sort}
         />
 
         <section
