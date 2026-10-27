@@ -26,6 +26,7 @@ Agents should read only the context necessary for their responsibilities unless 
 
 ### Sources of Truth
 
+- `project-requirements.md` — Required functionality and maintained project documentation.
 - `project-overview.md` — Product requirements and scope.
 - `architecture-context.md` — Architecture and technical invariants.
 - `code-standards.md` — Coding conventions and implementation standards.
@@ -37,14 +38,14 @@ Agent instructions define responsibilities but must not override shared project 
 
 ## 3. Handling Ambiguous Requirements
 
-The assessment intentionally leaves some implementation decisions open.
+Project requirements leave some implementation decisions open.
 
 Agents must exercise reasonable judgment without introducing unnecessary complexity.
 
 When a requirement is ambiguous:
 
 1. Check existing project context for an established decision.
-2. Prefer the simplest solution consistent with the assessment.
+2. Prefer the simplest solution consistent with the project requirements.
 3. Make a reasonable assumption when the decision is low-risk and reversible.
 4. Record meaningful assumptions in the task handoff.
 5. Request human approval when the decision affects architecture, security, dependencies, or product scope.
@@ -275,7 +276,7 @@ The development process must distinguish between:
 - Manual fixes following AI-generated code.
 - Automated verification.
 
-Meaningful interventions should be recorded for the final `AGENT.md` assessment documentation.
+Meaningful interventions should be recorded for the final `AGENT.md` development documentation.
 
 Do not invent agent activity, test results, or manual interventions.
 

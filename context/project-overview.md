@@ -8,7 +8,9 @@ The platform helps organizations explore communication and safety technology, co
 
 The experience serves both public visitors and authenticated business partners, with tailored product visibility and pricing.
 
-SIGNAL is designed as a technical assessment demonstrating modern web development, thoughtful product design, and structured AI-assisted engineering.
+SIGNAL is an independent full-stack product catalog portfolio project built with Next.js, React, TypeScript, Tailwind CSS, and Contentful. It combines server-rendered product discovery with structured AI-assisted engineering.
+
+Authentication is simulated, with two access levels: public and authenticated. The project demonstrates server-side access control without providing a production identity system.
 
 ## 2. Product Goals
 
@@ -29,7 +31,7 @@ They should be able to:
 
 - Explore the marketing homepage.
 - Browse publicly available products.
-- Search and filter the catalog.
+- Search, filter, and sort the catalog by price.
 - View product details and public pricing.
 - Switch between product display layouts.
 - Access the partner login.
@@ -55,7 +57,7 @@ They should be able to:
 3. Visitor opens the catalog.
 4. Visitor searches or filters products.
 5. Visitor switches between Price First and Specs First layouts.
-6. Visitor opens a product detail page.
+6. Visitor opens the interactive product drawer; direct product URLs render standalone detail pages.
 
 ### Partner Experience
 
@@ -93,6 +95,7 @@ Features include:
 - Public and partner-only product sets.
 - Category filtering.
 - Text search.
+- Ascending and descending sorting by the visitor's authorized price.
 - Clear Filters action.
 - Price First and Specs First display layouts.
 - Navigation to product details.
@@ -130,7 +133,7 @@ It should provide a clear path to partner-available products without duplicating
 
 ## 6. Content Strategy
 
-The initial catalog should contain approximately 10–12 fictional products across three categories:
+The local mock catalog contains fictional products across three categories. A Contentful adapter supplies the same normalized product contract when configured:
 
 - Communication Devices
 - Video & Monitoring
@@ -150,7 +153,7 @@ The visual experience should be:
 
 - Modern and minimal.
 - Professional without feeling generic.
-- Spacious and editorial.
+- Dark graphite surfaces, lime-green accents, and Geist typography.
 - Consistent across marketing and catalog pages.
 - Accessible and responsive.
 - Subtle in its use of motion.
@@ -186,13 +189,13 @@ The following are excluded:
 - Database-backed authentication.
 - Full CMS administration.
 
-Additional functionality should only be introduced when it directly improves an assessment requirement or resolves a demonstrated usability issue.
+Additional functionality should only be introduced when it directly improves a project requirement or resolves a demonstrated usability issue.
 
 ## 10. Product Decision Principles
 
 When requirements are ambiguous:
 
-1. Prioritize the assessment's explicit requirements.
+1. Prioritize the explicit requirements in `project-requirements.md`.
 2. Favor a clear and usable experience over feature quantity.
 3. Maintain consistency with the established product identity.
 4. Avoid features that introduce unnecessary dependencies.

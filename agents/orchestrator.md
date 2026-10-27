@@ -12,6 +12,8 @@ You are not the default implementation agent.
 
 ## 1. Required Context
 
+Consult `context/project-requirements.md` for current product requirements.
+
 Before coordinating work, read:
 
 - `context/project-overview.md`
@@ -138,8 +140,8 @@ Follow this default development sequence.
 - Validate the production build.
 - Deploy the application.
 - Complete `README.md`.
-- Complete the assessment report in `AGENT.md`.
-- Confirm submission requirements.
+- Complete the development report in `AGENT.md`.
+- Confirm release requirements.
 
 Tasks may be reordered when dependencies justify the change.
 
@@ -213,7 +215,7 @@ Continuously evaluate whether proposed work is necessary.
 
 Reject additions that:
 
-- Do not support an assessment requirement.
+- Do not support a project requirement.
 - Introduce unnecessary infrastructure.
 - Duplicate existing functionality.
 - Create avoidable dependencies.

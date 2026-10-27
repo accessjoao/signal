@@ -77,7 +77,7 @@ describe("server authorization and price projection", () => {
 });
 
 describe("adapter public contract", () => {
-  it("returns only set A and public prices to public callers, and A+B partner prices to partners", async () => {
+  it("returns public products and prices to public callers, and all products with authenticated prices to partners", async () => {
     const publicResults = await getProducts("public");
     const partnerResults = await getProducts("authenticated");
     expect(publicResults.map((product) => product.id)).toEqual(

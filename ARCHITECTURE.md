@@ -1,13 +1,12 @@
 # SIGNAL — Architecture & AI Development Workflow
 
-> Motorola Solutions Full Stack Web Developer technical assessment  
 > **Stack:** Next.js App Router · React · TypeScript · Tailwind CSS · Contentful / mock JSON · Vercel
 
 ## 1. At a glance
 
 SIGNAL is a product catalog built with a documented, multi-agent development workflow. The application uses **server-side product access and pricing rules**, while a CMS adapter keeps the UI independent of the content source.
 
-The assessment also evaluates **how the application was built**: planning, task delegation, specialized agent instructions, review, and verification.
+The development workflow documents **how the application was built**: planning, task delegation, specialized agent instructions, review, and verification.
 
 ## 2. Application Architecture
 
@@ -42,12 +41,14 @@ flowchart TD
 
 ### Product access
 
+Counts below describe the checked-in mock catalog; Contentful counts depend on published entries.
+
 | Visitor | Visible products | Pricing |
 |---|---|---|
 | Public | 8 public products | Public price |
 | Signed in | All 12 products | Authenticated price |
 
-The assessment uses **simulated login** (nonempty credentials). SIGNAL establishes a signed, HttpOnly session cookie and uses server-side access checks. This is not intended to be a production identity system.
+SIGNAL uses **simulated login** (nonempty credentials). SIGNAL establishes a signed, HttpOnly session cookie and uses server-side access checks. This is not intended to be a production identity system.
 
 ## 3. Product Data Flow
 
@@ -83,7 +84,7 @@ The same server-side access rules apply to **individual product detail requests*
 
 ### Contentful integration
 
-The Contentful adapter uses the **Content Delivery API** and resolves linked product assets. The source is selected using `CMS_SOURCE=mock` or `CMS_SOURCE=contentful`. Contentful data is cached with a 60-second revalidation interval; the mock source provides a reliable local/test fallback.
+The Contentful adapter uses the **Content Delivery API** and resolves linked product assets. The source is selected using `CMS_SOURCE=mock` or `CMS_SOURCE=contentful`. Contentful data is cached with a 60-second revalidation interval; mock mode provides a deterministic local/test source. Contentful failures do not automatically switch to mock data.
 
 ## 4. Multi-Agent Development Architecture
 
@@ -120,8 +121,6 @@ flowchart TB
 | `context/` | Shared requirements, architecture, standards, UI direction, and progress |
 
 **Agents define responsibilities; context provides shared project knowledge.** The Human Engineering Lead owns architectural decisions and final approval.
-
-**Agents define responsibilities; context provides shared project knowledge.**
 
 ### Development loop
 

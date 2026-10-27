@@ -1,16 +1,16 @@
 # SIGNAL — AI Development Instructions
 
-## Assessment Requirements
+## Project Requirements
 
-`context/assessment-requirements.md` contains the original Motorola Solutions technical assessment.
+`context/project-requirements.md` defines SIGNAL's current functionality and engineering requirements.
 
-Treat this document as the authoritative source for required functionality and submission deliverables.
+Treat this document as the authoritative source for required functionality and project documentation.
 
 The six project context files describe SIGNAL's implementation decisions, architecture, coding standards, and visual identity.
 
-If a project decision conflicts with an explicit assessment requirement, the assessment takes precedence. Report the conflict before making changes.
+If a project decision conflicts with an explicit project requirement, report the conflict before making changes. Documents in `docs/history/` are historical records, not active development instructions.
 
-All specialized agents must consult the assessment requirements when planning, implementing, or reviewing relevant functionality.
+All specialized agents must consult the project requirements when planning, implementing, or reviewing relevant functionality.
 
 ## Project
 
@@ -28,7 +28,7 @@ Development follows a Markdown-driven multi-agent workflow.
    - Frontend or visual tasks must read `context/ui-context.md`.
    - Backend and authentication tasks must follow `context/architecture-context.md`.
    - Review tasks must verify the implementation against the
-     assessment requirements and applicable context files.
+     project requirements and applicable context files.
 6. Inspect the existing implementation before making changes.
 
 Do not begin implementation without understanding the task's scope and architectural constraints.

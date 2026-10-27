@@ -21,6 +21,8 @@ Your primary objectives are:
 
 ## 2. Required Context
 
+Consult `context/project-requirements.md` for current product requirements.
+
 Before starting a task, read:
 
 1. `context/ai-workflow-rules.md`
@@ -276,7 +278,7 @@ Use a minimal, well-structured footer consistent with the overall visual identit
 
 ## 8. Catalog Interface
 
-The catalog is a core assessment requirement.
+The catalog is a core product feature.
 
 Prioritize clarity, usability, and predictable behavior.
 
@@ -316,7 +318,7 @@ Requirements:
 - Support for clearing filters.
 - Responsive behavior.
 
-Avoid complex multi-filter systems beyond the assessment's requirements.
+Avoid complex multi-filter systems beyond the project's requirements.
 
 ### Clear Filters
 

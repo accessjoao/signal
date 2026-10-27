@@ -75,7 +75,7 @@ Maintain clear pathways to the three product categories, curated public featured
 The catalog uses a **graphite** background and elevated graphite product cards. It should be denser and more functional than the homepage while clearly belonging to the same brand.
 
 - Intro heading and concise supporting copy, without an oversized hero that delays product discovery.
-- Search input, category filter, Apply/Clear Filters actions.
+- Search input, category filter, price sorting, Apply/Clear Filters actions.
 - Custom Radix category select; ensure “All categories” genuinely resets the filter (normalize `all` to an empty category or equivalent in the route/adapter).
 - **Price First / Specs First** toggle works client-side without a full page reload and changes the information hierarchy meaningfully.
 - Responsive grid: approximately three columns desktop, two tablet, one mobile.
@@ -117,16 +117,16 @@ Both use the shared `ProductDetails` component and the same **server-authorized 
 
 ## 10. Technical boundaries and security
 
-The UI must not undermine the assessment's full-stack requirements:
+The UI must not undermine the project's full-stack requirements:
 
 1. Next.js App Router, TypeScript, Tailwind CSS, mocked CMS JSON or Contentful adapter.
 2. Server-signed, HttpOnly session cookie; protected partner route.
-3. Public **Set A** and authenticated-only **Set B**.
+3. Public and authenticated-only product visibility.
 4. Each raw product can contain `priceLoggedOut` and `priceAuthenticated`, but **only server-selected `displayPrice` and authorized product data** reach client components.
 5. Never serialize partner-only products, restricted prices, or raw CMS objects into unauthenticated HTML/RSC payloads.
 6. Keep Server Components as the default; use Client Components only for actual interaction.
 7. Request-time authentication and authorization remain in server code, including catalog data supplied to the drawer and standalone product routes.
-8. Preserve category/search behavior, layout toggle, not-found handling, and missing-image fallbacks.
+8. Preserve category/search behavior, price sorting, layout toggle, not-found handling, and missing-image fallbacks.
 
 Do not add shopping cart, checkout, payments, reviews, wishlists, user registration, or unrelated analytics.
 
@@ -163,6 +163,6 @@ Before implementing a UI task:
 - [ ] Product drawer and standalone route both render correctly.
 - [ ] Empty, missing-image, and invalid-slug states are intentional.
 - [ ] Navigation, focus, labels, and contrast are accessible.
-- [ ] UI changes stay within the assessment scope.
+- [ ] UI changes stay within the approved project scope.
 
 **Final design principle:** SIGNAL should feel like a confident, dark enterprise technology brand with a secure, intuitive equipment catalog—not a generic dashboard or online store.

@@ -1,6 +1,6 @@
 # SIGNAL — AI-Assisted Development Report
 
-****Motorola Solutions | Full Stack Web Developer Technical Assessment****
+**Independent full-stack product catalog platform**
 
 ## 1. Executive Summary
 
@@ -8,7 +8,7 @@ SIGNAL is a full-stack product catalog built with Next.js, TypeScript, Tailwind 
 
 The project was developed using a ****Markdown-driven, multi-agent development framework****, with specialized roles for orchestration, backend engineering, frontend engineering, and independent review.
 
-My responsibility was to define the architecture, establish technical constraints, direct and evaluate AI-assisted implementation, resolve integration issues, and verify the resulting application against the assessment requirements.
+My responsibility was to define the architecture, establish technical constraints, direct and evaluate AI-assisted implementation, resolve integration issues, and verify the resulting application against the project requirements.
 
 Rather than relying on a single prompt to generate the application, I organized development around bounded responsibilities, shared context, explicit acceptance criteria, and iterative verification.
 
@@ -38,13 +38,13 @@ Rather than relying on a single prompt to generate the application, I organized 
 
 - Markdown-based agent instructions, shared context, and development tracking.
 
-The implementation prioritizes security boundaries, maintainability, and a coherent user experience without adding infrastructure beyond the assessment's scope.
+The implementation prioritizes security boundaries, maintainability, and a coherent user experience without adding infrastructure beyond the project's scope.
 
 ---
 
 ## 2. My Role: Architecture, Direction, and Integration
 
-I approached the assignment as an engineering lead coordinating AI-assisted development rather than as a passive consumer of generated code.
+I approached the project as an engineering lead coordinating AI-assisted development rather than as a passive consumer of generated code.
 
 My contributions included:
 
@@ -108,7 +108,7 @@ The system uses:
 
 - `context/` — requirements, architecture, standards, design direction, workflow, and progress tracking.
 
-The assessment requirements take precedence over implementation preferences.
+The project requirements take precedence over implementation preferences.
 
 This hierarchy reduces ambiguity, prevents agents from redefining shared interfaces independently, and makes the development process easier to inspect.
 
@@ -118,15 +118,15 @@ Tasks were designed around a repeatable workflow:
 
 1. Establish the relevant requirements, existing implementation, and constraints.
 
-2\. Define a bounded objective, owned files, dependencies, and acceptance criteria.
+2. Define a bounded objective, owned files, dependencies, and acceptance criteria.
 
-3\. Implement the change within the assigned responsibility.
+3. Implement the change within the assigned responsibility.
 
-4\. Run applicable verification checks.
+4. Run applicable verification checks.
 
-5\. Return a structured handoff documenting changes, decisions, test results, and outstanding issues.
+5. Return a structured handoff documenting changes, decisions, test results, and outstanding issues.
 
-6\. Review the result, address defects, and update project context.
+6. Review the result, address defects, and update project context.
 
 For example, the product-data phase required the Backend Agent to preserve both CMS price fields while exposing only one authorized display price to frontend components.
 
@@ -188,7 +188,7 @@ These phases combined AI assistance with developer-directed implementation and c
 
 Codex inspected the repository and prepared documentation, with a separately invoked Review Agent assigned to examine requirements and implementation evidence.
 
-A subsequent assessment audit verified lint, TypeScript, 40 Vitest tests, and a production build, while identifying a search-input synchronization issue.
+A subsequent requirements audit verified lint, TypeScript, 40 Vitest tests, and a production build, while identifying a search-input synchronization issue.
 
 That issue was subsequently corrected through a developer-applied change and verified with passing lint, TypeScript, and Playwright checks.
 
@@ -208,7 +208,7 @@ The catalog and product-detail routes use server-side access resolution, and the
 
 ### Signed session cookies
 
-The simulated login accepts nonempty credentials as specified by the assessment.
+The simulated login accepts nonempty credentials as defined by the project's demonstration scope.
 
 The server issues a signed session token containing a random identifier and expiration time rather than credentials.
 
@@ -232,7 +232,7 @@ This is intentionally simulated authentication, not a production identity system
 
 ### Safe CMS data projection
 
-The mock source retains the assessment-required fields:
+The mock source retains the raw CMS fields:
 
 - `priceLoggedOut`
 
@@ -266,7 +266,7 @@ This prevents an alternative navigation path from bypassing product visibility r
 
 ## 6. Product Experience and Frontend Engineering
 
-I treated the application as both a technical assessment and a usable product demonstration.
+I treated the application as a usable product demonstration with explicit engineering constraints.
 
 ### Visual direction
 
@@ -314,7 +314,7 @@ Contentful-hosted images are supported through Next.js Image with an allowlisted
 
 The shared layout and footer support mobile, tablet, and desktop viewports.
 
-The footer includes project attribution and identifies SIGNAL as a Motorola Solutions technical assessment concept.
+The footer includes developer attribution and identifies SIGNAL as an independent full-stack product catalog project.
 
 ---
 
@@ -340,7 +340,7 @@ Verification was incorporated throughout development rather than deferred until 
 
 | ****Product drawer tests**** | Opening without navigation, first-click regression, dismissal, focus/reopening, reduced motion, direct links, and invalid products |
 
-### Latest verification
+### Recorded verification before the Contentful integration
 
 The developer subsequently confirmed that lint, TypeScript checks, and the complete Playwright suite pass following the state-controlled drawer refactor and accessibility cleanup. The previously recorded Vitest and production-build results are listed separately below.
 
@@ -410,7 +410,7 @@ These corrections demonstrate an important part of my development approach: ****
 
 ### Mocked CMS and Contentful as interchangeable sources
 
-The assessment permits mocked CMS JSON. I initially used local JSON to keep development deterministic and tests independent of external services. I subsequently added a live Contentful adapter behind `CMS_SOURCE`, preserving the mock option for local development and regression testing.
+I initially used local JSON to keep development deterministic and tests independent of external services. I subsequently added a live Contentful adapter behind `CMS_SOURCE`, preserving the mock option for local development and regression testing.
 
 This introduces external API credentials, network availability, and cache staleness as operational concerns. A 60-second revalidation interval balances editorial updates against unnecessary API traffic. Contentful specifications remain a JSON field, which is compact but less editor-friendly than a separately modelled specification entry. The one-time import script can overwrite manual Contentful edits if rerun, so it should not be treated as a routine synchronization job.
 
@@ -442,13 +442,15 @@ A presentation-only component now owns image rendering and fallback artwork for 
 
 I intentionally avoided unrelated features such as shopping carts, payments, user registration, databases, and custom agent infrastructure.
 
-This kept engineering effort focused on the assessment's core requirements and made the resulting implementation easier to evaluate.
+This kept engineering effort focused on the project's core requirements and made the resulting implementation easier to evaluate.
 
 ---
 
-## 10. What I Would Improve With Two Additional Weeks
+## 10. Future Engineering Priorities
 
-### Week 1 — CMS Resilience and Editorial Experience
+These are possible improvements, not implemented features or commitments. Current scope remains defined in `context/project-requirements.md`.
+
+### CMS Resilience and Editorial Experience
 
 With Contentful already integrated, my first priority would be hardening the live CMS workflow. I would:
 
@@ -460,9 +462,9 @@ With Contentful already integrated, my first priority would be hardening the liv
 
 These improvements would make the CMS integration more resilient and maintainable without changing the server-side authorization boundary.
 
-### Week 2 — Authentication and User Experience
+### Authentication and User Experience
 
-The second week would focus on making the application more suitable for real users.
+A separate future phase could introduce real user accounts, subject to an explicit scope and architecture decision.
 
 I would:
 
@@ -484,7 +486,7 @@ These improvements would make SIGNAL more practical as a real product catalog wh
 
 ## 11. Key Takeaways
 
-This assessment reinforced three principles that shape how I use AI in software development.
+This project reinforced three principles that shape how I use AI in software development.
 
 ****1. Architecture must precede generation.****
 
@@ -510,7 +512,7 @@ The resulting system is intentionally scoped, technically cohesive, and supporte
 
 ---
 
-****Project: SIGNAL — Motorola Solutions Full Stack Web Developer Technical Assessment****
+****Project: SIGNAL — Full-Stack Product Catalog Platform****
 
 ****Developer: Joao Felipe Silveira****
 

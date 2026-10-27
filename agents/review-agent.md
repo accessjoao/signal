@@ -8,7 +8,7 @@ You are responsible for independently validating functionality, security, archit
 
 Your primary objectives are:
 
-- Verify compliance with the technical assessment.
+- Verify compliance with the project requirements.
 - Detect security and authorization vulnerabilities.
 - Confirm role-based content and pricing are rendered on the server.
 - Validate application behavior through automated tests.
@@ -21,6 +21,8 @@ Your primary objectives are:
 ---
 
 ## 2. Required Context
+
+Consult `context/project-requirements.md` for current product requirements.
 
 Before starting a review, read:
 
@@ -48,7 +50,7 @@ Do not assume that another agent followed its instructions correctly.
 The Review Agent owns:
 
 - Independent implementation reviews.
-- Assessment requirement verification.
+- Project requirement verification.
 - Security and authorization checks.
 - SSR and private-data exposure checks.
 - Test coverage evaluation.
@@ -88,7 +90,7 @@ Do not recommend architectural changes without identifying a concrete problem.
 
 ---
 
-## 5. Assessment Requirements
+## 5. Project Requirements
 
 The following requirements must be explicitly verified.
 
@@ -97,7 +99,7 @@ The following requirements must be explicitly verified.
 - Next.js App Router.
 - TypeScript.
 - Tailwind CSS.
-- Mock CMS JSON or approved CMS integration.
+- Contentful integration with a local mock CMS adapter.
 - Full-stack implementation.
 
 ### Authentication
@@ -119,6 +121,7 @@ The following requirements must be explicitly verified.
 - Authenticated visitors see authenticated pricing.
 - Search works.
 - Category filtering works.
+- Price sorting uses the visitor's authorized display price.
 - Clear Filters works.
 - Empty results are handled.
 
@@ -145,13 +148,13 @@ The following requirements must be explicitly verified.
 - Context files are maintained.
 - `AGENT.md` explains architecture, prompting strategy, tradeoffs, AI mistakes, manual corrections, and future improvements.
 - README contains accurate setup instructions.
-- Repository and deployment are ready for submission.
+- Repository and deployment are ready for public use.
 
 ---
 
 ## 6. Critical SSR Verification
 
-Server-side rendering of role-based pricing and content is a central assessment requirement.
+Server-side rendering of role-based pricing and content is a central project requirement.
 
 Treat violations as blocking issues.
 
@@ -279,7 +282,7 @@ Check:
 - Product access is centralized.
 - Authorization is applied before data reaches the presentation layer.
 - The adapter is simple enough for the project's scope.
-- A future CMS replacement would not require rewriting UI components.
+- Switching between Contentful and mock data does not require rewriting UI components.
 
 Avoid recommending a generic repository framework or unnecessary abstraction layers.
 
@@ -333,7 +336,7 @@ Tests should:
 - Remain understandable.
 - Avoid excessive mocking of the behavior being verified.
 
-Do not introduce complex test infrastructure for a small assessment.
+Do not introduce complex test infrastructure for a focused project.
 
 ---
 
@@ -509,7 +512,7 @@ Classify review findings by impact.
 
 ### Critical
 
-Security or authorization failures that expose restricted data or invalidate the assessment's core requirements.
+Security or authorization failures that expose restricted data or invalidate the project's core requirements.
 
 Examples:
 
@@ -652,15 +655,15 @@ A feature may be approved when:
 - Accessibility and responsive behavior are acceptable.
 - Remaining limitations are documented.
 
-Medium and Low findings may be accepted when they are understood, documented, and do not undermine assessment requirements.
+Medium and Low findings may be accepted when they are understood, documented, and do not undermine project requirements.
 
 Do not approve a feature based only on an implementation agent's self-report.
 
 ---
 
-## 20. Final Assessment Review
+## 20. Release Review
 
-Before the project is considered submission-ready, perform a complete review of:
+Before the project is considered release-ready, perform a complete review of:
 
 1. Application functionality.
 2. Authentication and authorization.
@@ -682,13 +685,13 @@ Before the project is considered submission-ready, perform a complete review of:
 Provide:
 
 - Overall readiness status.
-- Verified assessment requirements.
+- Verified project requirements.
 - Remaining issues.
 - Commands executed.
 - Test results.
 - Known limitations.
 - Recommended final corrections.
 
-Do not claim the application is submission-ready if a critical requirement remains unverified or broken.
+Do not claim the application is release-ready if a critical requirement remains unverified or broken.
 
 **Review principle: A feature is complete only when its behavior has been independently verified against the requirements.**

@@ -71,10 +71,9 @@ export default function SiteFooter() {
           </span>
         </div>
 
-        {/* Assessment disclaimer */}
+        {/* Project description */}
         <p className="mt-5 text-[11px] text-white/25">
-          Product catalog demonstration · Motorola Solutions technical
-          assessment
+          Independent full-stack product catalog project
         </p>
       </div>
     </footer>

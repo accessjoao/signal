@@ -22,6 +22,8 @@ Work within the existing architecture. Do not introduce additional infrastructur
 
 ## 2. Required Context
 
+Consult `context/project-requirements.md` for current product requirements.
+
 Before starting a task, read:
 
 1. `context/ai-workflow-rules.md`
@@ -66,7 +68,7 @@ Use the approved stack:
 - Next.js App Router.
 - TypeScript.
 - React Server Components.
-- Mock JSON CMS data.
+- Contentful integration and local mock JSON through the CMS adapter.
 - Node.js server runtime where required.
 - Vitest for unit tests.
 
@@ -141,7 +143,7 @@ Use a realistic but manageable mock catalog.
 
 Product data must be accessed through a typed adapter rather than imported directly into UI components.
 
-The initial implementation uses local mock CMS JSON.
+The implementation supports Contentful and local mock CMS JSON, selected through `CMS_SOURCE`; mock data is the default.
 
 The adapter should provide straightforward operations such as:
 
@@ -150,7 +152,7 @@ The adapter should provide straightforward operations such as:
 - Retrieve featured products when required.
 - Retrieve available categories.
 
-The adapter must be easy to replace with a real CMS integration later.
+Preserve shared normalization, authorization, and pricing rules across both sources, and keep presentation independent of the selected source.
 
 Do not build a generic CMS framework.
 
@@ -162,7 +164,7 @@ The frontend should not depend on the mock JSON file's physical location or inte
 
 ## 7. Authentication
 
-Implement simulated authentication according to the assessment.
+Implement simulated authentication according to the project requirements.
 
 ### Login Rules
 
@@ -253,7 +255,7 @@ Use a consistent not-found or access-denied behavior.
 
 ## 9. Server-Side Rendering
 
-This is a critical assessment requirement.
+This is a critical project requirement.
 
 Role-based visibility and pricing must be resolved on the server before product content is rendered.
 
@@ -300,7 +302,7 @@ Support the catalog requirements:
 - Prefer simple, testable pure functions.
 - Use URL search parameters when appropriate.
 
-Do not create a separate search service for a small mocked catalog.
+Do not create a separate search service without a demonstrated need.
 
 ---
 

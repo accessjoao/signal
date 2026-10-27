@@ -2,9 +2,9 @@
 
 ## 1. Architecture Overview
 
-SIGNAL is an enterprise marketing website with integrated product catalog functionality.
+SIGNAL is an independent full-stack product catalog platform with an enterprise marketing interface.
 
-The application uses Next.js App Router, TypeScript, Tailwind CSS, and a headless CMS-style data access layer.
+The application uses Next.js App Router, React, TypeScript, Tailwind CSS, and Contentful through a typed CMS adapter with a local mock data source.
 
 The architecture prioritizes server rendering, secure role-based content delivery, reusable components, and maintainability.
 
@@ -17,8 +17,8 @@ The architecture prioritizes server rendering, secure role-based content deliver
 | Framework | Next.js (App Router) |
 | Language | TypeScript |
 | Styling | Tailwind CSS |
-| Content | Local JSON through a typed CMS adapter |
-| Authentication | Server-managed signed session cookie |
+| Content | Contentful or local mock JSON through a typed CMS adapter |
+| Authentication | Simulated credentials with a server-managed signed session cookie |
 | Hosting | Vercel |
 | Testing | Vitest (unit), Playwright (E2E) |
 
@@ -42,7 +42,7 @@ Do not introduce additional routes without a clear requirement.
 
 ## 4. Product Data Model
 
-Products are stored in local JSON and accessed through a typed data layer.
+Products come from Contentful or local mock JSON and are accessed through a typed data layer.
 
 Each product contains:
 
@@ -74,13 +74,15 @@ The adapter is responsible for:
 - Returning normalized product data.
 - Handling missing or invalid content.
 
-The initial adapter uses local JSON. A future CMS integration should be possible without rewriting presentation components.
+The adapter uses local JSON by default (`CMS_SOURCE=mock`) and supports Contentful (`CMS_SOURCE=contentful`). Both sources use shared normalization, visibility, and pricing rules without changing presentation components.
 
 Do not build a generic CMS framework.
 
 ## 6. Authentication and Authorization
 
 Authentication is simulated. Any non-empty username and password are accepted.
+
+Access levels are `public` and `authenticated`; there are no account roles or production identity verification.
 
 A successful login creates a signed session cookie on the server.
 
@@ -122,9 +124,9 @@ Client Components must not independently determine authorization or privileged p
 
 ## 8. Filtering and Layouts
 
-The catalog supports category filtering, text search, and clearing filters.
+The catalog supports category filtering, text search, ascending or descending price sorting, and clearing filters. Sorting uses the visitor's server-selected display price.
 
-Search and category filters use URL search parameters, allowing direct navigation and shareable filtered results.
+Search, category, and sort controls use URL search parameters, allowing direct navigation and shareable results.
 
 The application supports two product card layouts:
 
