@@ -351,3 +351,16 @@ Verified that Contentful products load correctly, with 8 products visible public
 Following the Contentful image integration, extracted duplicated product image rendering into a shared presentation-only ProductVisual component supporting card, details, and featured variants. Updated ProductCard, ProductDetails, and the homepage Featured Products section to use the shared component.
 
 Preserved existing image sizing, overlays, decorative elements, hover effects, accessibility attributes, and category-specific icon fallbacks. The Frontend Agent implemented the extraction, followed by independent source review and orchestrator comparison against the previous implementation. ESLint and TypeScript checks passed. Production build, automated tests, and post-refactor browser validation remain outstanding.
+
+
+### Next.js security patch - October 27, 2026
+
+Upgraded Next.js from 16.4.0 to exactly 16.4.3 in an isolated worktree on `chore/next-16.4.3-security`. Updated the npm lockfile for Next.js and its bundled environment/compiler packages. Added supported `experimental.agentUpgrade: "security"` while preserving unrelated configuration. No codemods, application behavior changes, or Future Defaults adoption were needed. The original checkout's uncommitted portfolio documentation remains separate.
+
+Duplicate checks found no equivalent local/remote branch or commit work and no open GitHub PRs. The GitHub CLI was unavailable; the connected GitHub API supplied the PR check.
+
+Verification: dependency installation succeeded; `npx next --version` reported 16.4.3; ESLint, `tsc --noEmit`, all 40 Vitest tests, production build, and all 30 Chromium tests passed. Build and browser checks used mock data and temporary session secrets. The initial sandbox build could not fetch Google Fonts; the initial browser run was interrupted after repeated font warnings and failure to finish cleanly. Both passed with approved network access. No production deployment or live Contentful checks were performed.
+
+The orchestrator reviewed every final diff and the lockfile package changes; `git diff --check` passed. An independent Review Agent reviewed the verification plan but hit its usage limit before final diff review, so final independent approval is not claimed.
+
+`npm audit` reported no Next.js vulnerability, but two moderate findings remain in the existing Vitest/@vitest/mocker development dependency chain. They are outside this patch upgrade; consider a separately scoped Vitest update. The existing catalog cookie-tampering host mismatch also remains unchanged; the authentication suite independently covers cookie tampering at the correct host.
